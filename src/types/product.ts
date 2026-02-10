@@ -1,16 +1,19 @@
-export type Category =
-  | "Trending"
-  | "New"
-  | "Second-hand"
-  | "Low price";
-
 export interface Product {
-  id?: string;
+  id: string;
   name: string;
   brand: string;
   price: number;
   discount: number;
-  category: Category;
+  category: string;
   image_url: string;
-  created_at?: string;
+  created_at: string;
+}
+
+export interface ProductInput {
+  name: string;
+  brand: string;
+  price: number;
+  discount: number;
+  category: string;
+  image?: File;
 }
