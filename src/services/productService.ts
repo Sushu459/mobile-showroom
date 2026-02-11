@@ -3,6 +3,22 @@ import type { Product, ProductInput } from '../types/product';
 import { storageService } from './storageService';
 
 export const productService = {
+  // ... (keep your existing getAllProducts, addProduct, deleteProduct functions) ...
+
+  // ADD THIS NEW FUNCTION:
+  async getFeaturedProducts() {
+    // Fetches top 5 products that are 'Trending' or 'New Arrival', sorted by newest
+    const { data, error } = await supabase
+      .from('products')
+      .select('*')
+      .in('category', ['Trending', 'New Arrival']) 
+      .order('created_at', { ascending: false })
+      .limit(5);
+    
+    if (error) throw error;
+    return data as Product[];
+  },
+
   async getAllProducts() {
     const { data, error } = await supabase
       .from('products')
@@ -14,7 +30,6 @@ export const productService = {
   },
 
   async addProduct(product: ProductInput) {
-    // Default placeholder if no image is uploaded
     let imageUrl = 'https://placehold.co/400x300?text=No+Image'; 
     
     if (product.image) {
@@ -27,9 +42,10 @@ export const productService = {
         name: product.name,
         brand: product.brand,
         price: product.price,
-        discount: product.discount || 0, // Ensure default 0 if undefined
+        discount: product.discount || 0,
         category: product.category,
-        image_url: imageUrl // This must strictly be a string, never null
+        description: product.description || '', // Save description
+        image_url: imageUrl
       }])
       .select()
       .single();

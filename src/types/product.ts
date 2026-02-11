@@ -5,6 +5,7 @@ export interface Product {
   price: number;
   discount: number;
   category: string;
+  description: string;
   image_url: string;
   created_at: string;
 }
@@ -15,5 +16,6 @@ export interface ProductInput {
   price: number;
   discount: number;
   category: string;
+  description: string;
   image?: File;
 }

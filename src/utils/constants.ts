@@ -7,3 +7,4 @@ export const CATEGORIES = [
 ] as const;
 
 export const APP_NAME = "Mobile Showroom";
+export const SHOP_PHONE = "8328636040";
