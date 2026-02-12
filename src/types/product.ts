@@ -8,6 +8,9 @@ export interface Product {
   description: string;
   image_url: string;
   created_at: string;
+  in_stock: boolean;
+  image_urls: string[];
+
 }
 
 export interface ProductInput {
@@ -17,5 +20,8 @@ export interface ProductInput {
   discount: number;
   category: string;
   description: string;
+  images?: File[];
   image?: File;
+  in_stock: boolean;
+  existingImages?: string[];
 }

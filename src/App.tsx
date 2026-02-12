@@ -1,5 +1,6 @@
 import { BrowserRouter, useLocation } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
+import { TenantProvider } from './context/TenantContext';
 import Navbar from "./components/common/Navbar";
 import Footer from "./components/common/Footer";
 import AppRoutes from "./routes/AppRoutes";
@@ -23,9 +24,13 @@ function LayoutWrapper() {
 function App() {
   return (
     <BrowserRouter>
+    <TenantProvider>
       <AuthProvider>
-        <LayoutWrapper />
+        
+          <LayoutWrapper />
+        
       </AuthProvider>
+    </TenantProvider>
     </BrowserRouter>
   );
 }

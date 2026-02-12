@@ -1,123 +1,71 @@
-import { useEffect, useState } from "react";
-import ProductForm from "../../components/admin/ProductForm";
-import type { Product } from "../../types/product";
-import { productService } from "../../services/productService";
-import { Trash2 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { PlusCircle, Pencil, Trash2 } from "lucide-react";
 
 export default function Dashboard() {
-  const [products, setProducts] = useState<Product[]>([]);
 
-  const fetchProducts = async () => {
-    const data = await productService.getAllProducts();
-    setProducts(data);
-  };
-
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  const handleDelete = async (id: string) => {
-    if (confirm("Are you sure you want to delete this product?")) {
-      await productService.deleteProduct(id);
-      fetchProducts();
-    }
-  };
+  const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-gray-100 py-10 px-6">
-      <div className="max-w-6xl mx-auto space-y-10">
+    <div className="max-w-7xl mx-auto px-6 py-10">
 
-        {/* Page Header */}
-        <div>
-          <h1 className="text-3xl font-bold text-gray-800">
-            Shop Dashboard
-          </h1>
-          <p className="text-gray-500 text-sm mt-1">
-            Manage your products and inventory efficiently
+      <h1 className="text-3xl font-bold text-gray-900 mb-10">
+        Admin Dashboard
+      </h1>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+        {/* ADD PRODUCT */}
+        <div
+          onClick={() => navigate("/admin/add")}
+          className="group cursor-pointer rounded-2xl border border-gray-200 bg-linear-to-br from-white to-gray-50 p-8 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+        >
+          <div className="flex items-center justify-center h-14 w-14 rounded-xl bg-green-100 mb-6">
+            <PlusCircle className="text-green-600 h-7 w-7" />
+          </div>
+
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">
+            Add Product
+          </h2>
+
+          <p className="text-sm text-gray-600">
+            Create and publish a new product in your shop.
           </p>
         </div>
 
-        {/* Product Form */}
-        <ProductForm onSuccess={fetchProducts} />
-
-        {/* Product Table */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-
-          <div className="px-6 py-5 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-800">
-              Product List
-            </h2>
+        {/* UPDATE / MODIFY */}
+        <div
+          onClick={() => navigate("/admin/manage")}
+          className="group cursor-pointer rounded-2xl border border-gray-200 bg-linear-to-br from-white to-gray-50 p-8 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+        >
+          <div className="flex items-center justify-center h-14 w-14 rounded-xl bg-blue-100 mb-6">
+            <Pencil className="text-blue-600 h-7 w-7" />
           </div>
 
-          <table className="w-full text-sm text-left">
-            <thead className="bg-gray-50 text-gray-500 uppercase text-xs tracking-wider">
-              <tr>
-                <th className="px-6 py-4">Product</th>
-                <th className="px-6 py-4">Category</th>
-                <th className="px-6 py-4">Price</th>
-                <th className="px-6 py-4 text-right">Action</th>
-              </tr>
-            </thead>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">
+            Update / Modify Product
+          </h2>
 
-            <tbody className="divide-y divide-gray-100">
-              {products.map((product) => (
-                <tr
-                  key={product.id}
-                  className="hover:bg-gray-50 transition duration-150"
-                >
-                  <td className="px-6 py-4">
-                    <div className="flex items-center gap-4">
-                      <img
-                        src={
-                          product.image_url ||
-                          "https://placehold.co/100"
-                        }
-                        alt={product.name}
-                        className="w-12 h-12 rounded-xl object-cover border border-gray-200"
-                      />
-                      <div>
-                        <p className="font-medium text-gray-800">
-                          {product.name}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {product.brand}
-                        </p>
-                      </div>
-                    </div>
-                  </td>
+          <p className="text-sm text-gray-600">
+            Edit and update existing product details.
+          </p>
+        </div>
 
-                  <td className="px-6 py-4 text-gray-600">
-                    {product.category}
-                  </td>
+        {/* DELETE */}
+        <div
+          onClick={() => navigate("/admin/dashboard")}
+          className="group cursor-pointer rounded-2xl border border-gray-200 bg-linear-to-br from-white to-gray-50 p-8 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+        >
+          <div className="flex items-center justify-center h-14 w-14 rounded-xl bg-red-100 mb-6">
+            <Trash2 className="text-red-600 h-7 w-7" />
+          </div>
 
-                  <td className="px-6 py-4 font-medium text-gray-800">
-                    ₹{product.price}
-                  </td>
+          <h2 className="text-xl font-semibold text-gray-900 mb-2">
+            Delete Product
+          </h2>
 
-                  <td className="px-6 py-4 text-right">
-                    <button
-                      onClick={() => handleDelete(product.id)}
-                      className="p-2 rounded-lg hover:bg-red-50 transition"
-                    >
-                      <Trash2 className="h-5 w-5 text-red-500 hover:text-red-600" />
-                    </button>
-                  </td>
-                </tr>
-              ))}
-
-              {products.length === 0 && (
-                <tr>
-                  <td
-                    colSpan={4}
-                    className="text-center py-10 text-gray-400"
-                  >
-                    No products available
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-
+          <p className="text-sm text-gray-600">
+            Remove products permanently from your store.
+          </p>
         </div>
 
       </div>

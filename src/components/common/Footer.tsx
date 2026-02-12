@@ -1,7 +1,15 @@
-import { Smartphone, Phone, Mail, ShieldCheck, Truck } from "lucide-react";
+import { Phone, Mail, ShieldCheck, Truck, Store } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useTenant } from "../../context/TenantContext"; // <--- Import Context
 
 export default function Footer() {
+  const { tenant } = useTenant(); // <--- Get Dynamic Data
+
+  // Fallbacks if data is missing
+  const storeName = tenant?.name || "Mobile Showroom";
+  const mobileNumber = tenant?.mobile_number || "+91 98765 43210";
+  const primaryColor = tenant?.primary_color || "#2563EB"; // Default Blue
+
   return (
     <footer className="bg-gray-50 border-t border-gray-200 mt-20">
       
@@ -12,17 +20,20 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <div className="flex items-center gap-2 mb-4">
-              <div className="bg-blue-600 p-2 rounded-lg">
-                <Smartphone className="h-5 w-5 text-white" />
+              <div 
+                className="p-2 rounded-lg text-white shadow-sm"
+                style={{ backgroundColor: primaryColor }}
+              >
+                <Store className="h-5 w-5" />
               </div>
-              <span className="text-lg font-bold text-gray-900">
-                Mobile<span className="text-blue-600">Showroom</span>
+              <span className="text-xl font-extrabold text-gray-900 tracking-tight">
+                {storeName}
               </span>
             </div>
 
             <p className="text-sm text-gray-500 leading-relaxed">
               Your trusted local mobile store offering genuine products,
-              best prices, and reliable after-sales support.
+              best prices, and reliable after-sales support in your city.
             </p>
           </div>
 
@@ -32,13 +43,13 @@ export default function Footer() {
               Quick Links
             </h4>
             <div className="space-y-2 text-sm text-gray-600">
-              <Link to="/" className="block hover:text-blue-600 transition">
+              <Link to="/" className="block hover:text-gray-900 transition hover:underline">
                 Home
               </Link>
-              <Link to="/" className="block hover:text-blue-600 transition">
+              <Link to="/" className="block hover:text-gray-900 transition hover:underline">
                 All Mobiles
               </Link>
-              <Link to="/admin/login" className="block hover:text-blue-600 transition">
+              <Link to="/admin/login" className="block hover:text-gray-900 transition hover:underline">
                 Partner Login
               </Link>
             </div>
@@ -47,19 +58,21 @@ export default function Footer() {
           {/* Support */}
           <div>
             <h4 className="text-sm font-semibold text-gray-900 mb-4 uppercase tracking-wider">
-              Support
+              Contact Us
             </h4>
             <div className="space-y-3 text-sm text-gray-600">
               <div className="flex items-center gap-2">
-                <Phone className="w-4 h-4 text-blue-600" />
-                <span>+91 98765 43210</span>
+                <Phone className="w-4 h-4" style={{ color: primaryColor }} />
+                <a href={`tel:${mobileNumber}`} className="hover:text-gray-900 transition">
+                  {mobileNumber}
+                </a>
               </div>
               <div className="flex items-center gap-2">
-                <Mail className="w-4 h-4 text-blue-600" />
-                <span>support@mobileshowroom.com</span>
+                <Mail className="w-4 h-4" style={{ color: primaryColor }} />
+                <span>support@{storeName.toLowerCase().replace(/\s+/g, '')}.com</span>
               </div>
-              <p className="text-gray-500 text-xs mt-2">
-                Mon - Sat: 9:00 AM - 9:00 PM
+              <p className="text-gray-500 text-xs mt-2 pl-6">
+                Mon - Sat: 10:00 AM - 9:00 PM
               </p>
             </div>
           </div>
@@ -76,11 +89,11 @@ export default function Footer() {
               </div>
               <div className="flex items-center gap-2">
                 <Truck className="w-4 h-4 text-green-600" />
-                <span>Fast & Safe Delivery</span>
+                <span>Fast Local Delivery</span>
               </div>
               <div>
-                <span className="text-gray-500 text-xs">
-                  Official warranty on all devices
+                <span className="text-gray-500 text-xs bg-gray-100 px-2 py-1 rounded">
+                  Official Warranty Available
                 </span>
               </div>
             </div>
@@ -90,9 +103,11 @@ export default function Footer() {
       </div>
 
       {/* Bottom Section */}
-      <div className="border-t border-gray-200 py-4">
-        <div className="max-w-7xl mx-auto px-6 text-center text-sm text-gray-500">
-          © {new Date().getFullYear()} MobileShowroom. All rights reserved.
+      <div className="border-t border-gray-200 py-6 bg-white">
+        <div className="max-w-7xl mx-auto px-6 text-center">
+          <p className="text-sm text-gray-500">
+            © {new Date().getFullYear()} <span className="font-bold text-gray-700">{storeName}</span>. All rights reserved.
+          </p>
         </div>
       </div>
 
