@@ -1,6 +1,17 @@
 import { useState } from 'react';
 import type { Product } from '../../types/product';
-import { X, ShoppingBag, Share2, MessageCircle, Loader2, ChevronLeft, ChevronRight } from 'lucide-react';
+import { 
+  X, 
+  ShoppingBag, 
+  Share2, 
+  MessageCircle, 
+  Loader2, 
+  ChevronLeft, 
+  ChevronRight, 
+  CheckCircle2, 
+  Smartphone,
+  ShieldCheck
+} from 'lucide-react';
 import { useTenant } from '../../context/TenantContext';
 
 interface Props {
@@ -24,13 +35,20 @@ export default function ProductCard({ product }: Props) {
 
   const currentImage = images[currentImageIndex];
 
-  // Open Modal & Reset Gallery
+  // --- HANDLERS ---
   const handleOpenModal = () => {
     setCurrentImageIndex(0);
     setShowModal(true);
+    // Prevent background scrolling when modal is open
+    document.body.style.overflow = 'hidden';
   };
 
-  // Gallery Navigation
+  const handleCloseModal = () => {
+    setShowModal(false);
+    // Restore background scrolling
+    document.body.style.overflow = 'unset';
+  };
+
   const nextImage = (e?: React.MouseEvent) => {
     e?.stopPropagation();
     setCurrentImageIndex((prev) => (prev + 1) % images.length);
@@ -44,7 +62,6 @@ export default function ProductCard({ product }: Props) {
   // --- NATIVE SHARE ---
   const handleNativeShare = async () => {
     if (!currentImage) return;
-
     if (!navigator.share) {
       alert("Sharing is not supported on this device.");
       return;
@@ -56,14 +73,12 @@ export default function ProductCard({ product }: Props) {
       const blob = await response.blob();
       const file = new File([blob], `${product.name.replace(/\s+/g, '_')}.jpg`, { type: 'image/jpeg' });
 
-      const shareData: ShareData = {
+      await navigator.share({
         title: `${product.brand} ${product.name}`,
         text: `Check out this ${product.name} at ${tenant?.name || 'Mobile Showroom'}!`,
         files: navigator.canShare && navigator.canShare({ files: [file] }) ? [file] : undefined,
         url: !navigator.canShare({ files: [file] }) ? window.location.href : undefined
-      };
-
-      await navigator.share(shareData);
+      });
     } catch (error) {
       console.error("Error sharing:", error);
     } finally {
@@ -74,7 +89,6 @@ export default function ProductCard({ product }: Props) {
   // --- WHATSAPP ---
   const handleWhatsApp = () => {
     const phoneNumber = tenant?.mobile_number; 
-
     if (!phoneNumber) {
         alert("Shop contact number not available.");
         return;
@@ -95,159 +109,201 @@ Hi, is this available?`.trim();
 
   return (
     <>
-      {/* 1. CARD GRID ITEM */}
-      <div className="group bg-white rounded-2xl shadow-sm hover:shadow-xl border border-gray-100 overflow-hidden transition-all duration-300 hover:-translate-y-1 flex flex-col h-full">
-        {/* Main Card Image (Shows First Image) */}
-        <div className="relative h-64 bg-gray-50 p-6 flex items-center justify-center group-hover:bg-gray-100 transition-colors cursor-pointer" onClick={handleOpenModal}>
+      {/* 1. PRODUCT CARD (Grid View) */}
+      <div 
+        className="group relative bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 hover:-translate-y-1 flex flex-col h-full cursor-pointer overflow-hidden"
+        onClick={handleOpenModal}
+      >
+        {/* Card Image Area */}
+        <div className="relative h-64 p-6 flex items-center justify-center bg-gray-50/50 group-hover:bg-gray-50 transition-colors">
           <img 
             src={images[0]} 
             alt={product.name}
             className="w-full h-full object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-110"
           />
           
-          {/* Share Button */}
-          <button 
-            onClick={(e) => { e.stopPropagation(); handleNativeShare(); }}
-            disabled={isSharing}
-            className="absolute top-3 right-3 p-2 bg-white/80 rounded-full text-gray-600 hover:text-blue-600 hover:bg-white shadow-sm z-10 transition-colors"
-          >
-            {isSharing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Share2 className="w-4 h-4" />}
-          </button>
-
-          {/* Badges */}
-          <div className="absolute top-3 left-3 flex flex-col gap-2">
-            {product.category === 'Trending' && <span className="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-1 rounded uppercase">Trending</span>}
-            {product.category === 'New Arrival' && <span className="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-1 rounded uppercase">New</span>}
-          </div>
+          {/* Discount Badge */}
           {product.discount > 0 && (
-            <div className="absolute bottom-3 right-3 bg-rose-500 text-white text-[10px] font-bold px-2 py-1 rounded-full shadow-sm">
-              {product.discount}% OFF
+            <div className="absolute top-3 left-3 bg-gray-900 text-white text-[10px] font-bold px-2 py-1 rounded-md uppercase tracking-wider shadow-sm">
+              -{product.discount}%
             </div>
           )}
+
+          {/* Quick Action Overlay */}
+          <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0 duration-300">
+             <button 
+                onClick={(e) => { e.stopPropagation(); handleNativeShare(); }}
+                className="p-2 bg-white rounded-full shadow-md text-gray-600 hover:text-blue-600 transition-colors"
+             >
+                {isSharing ? <Loader2 className="w-4 h-4 animate-spin" /> : <Share2 className="w-4 h-4" />}
+             </button>
+          </div>
         </div>
         
-        {/* Content */}
+        {/* Card Details */}
         <div className="p-5 flex-1 flex flex-col">
           <div className="mb-2">
-            <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">{product.brand}</p>
-            <h3 className="text-base font-bold text-gray-900 truncate mt-1 group-hover:text-blue-600 transition-colors cursor-pointer" onClick={handleOpenModal}>
+            <p className="text-xs font-bold text-blue-600 uppercase tracking-wider mb-1">{product.brand}</p>
+            <h3 className="text-base font-bold text-gray-900 line-clamp-1 group-hover:text-blue-600 transition-colors">
               {product.name}
             </h3>
-            <p className="text-xs text-gray-400 mt-1 line-clamp-2 min-h-[2.5em]">
-              {product.description || 'View details for specifications...'}
-            </p>
           </div>
           
-          <div className="mt-auto pt-4 flex items-end justify-between border-t border-gray-50">
-            <div className="flex flex-col">
-               <span className="text-xs text-gray-400 font-medium">Price</span>
-               <div className="flex items-baseline gap-2">
-                  <p className="text-xl font-extrabold text-gray-900">₹{discountedPrice.toLocaleString()}</p>
-                  {product.discount > 0 && (
-                    <p className="text-sm text-gray-400 line-through">₹{product.price.toLocaleString()}</p>
-                  )}
-               </div>
+          <div className="mt-auto flex items-end justify-between pt-4 border-t border-gray-50">
+            <div>
+               <p className="text-lg font-extrabold text-gray-900">₹{discountedPrice.toLocaleString()}</p>
+               {product.discount > 0 && (
+                 <p className="text-xs text-gray-400 line-through">₹{product.price.toLocaleString()}</p>
+               )}
             </div>
-            
-            <button onClick={handleOpenModal} className="bg-purple-100 text-purple-700 p-2.5 rounded-full hover:bg-purple-600 hover:text-white transition-all transform active:scale-95 shadow-sm">
-               <ShoppingBag className="w-5 h-5" />
-            </button>
+            <div className="p-2 bg-purple-200 rounded-full  group-hover:bg-purple-400 group-hover:text-white transition-colors">
+               <ShoppingBag className="w-4 h-4" />
+            </div>
           </div>
         </div>
       </div>
 
-      {/* 2. DETAILS MODAL WITH GALLERY */}
+      {/* 2. PREMIUM MODAL (Mobile Optimized) */}
       {showModal && (
-        <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowModal(false)} />
+        <div className="fixed inset-0 z-100 flex items-center justify-center p-4 sm:p-6">
+          <div 
+            className="absolute inset-0 bg-gray-900/40 backdrop-blur-lg transition-opacity" 
+            onClick={handleCloseModal} 
+          />
           
-          <div className="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl overflow-hidden animate-fade-in-up flex flex-col md:flex-row max-h-[90vh]">
-            <button onClick={() => setShowModal(false)} className="absolute top-4 right-4 p-2 bg-gray-100 hover:bg-gray-200 rounded-full z-30 transition-colors">
-              <X className="w-5 h-5 text-gray-600" />
+          {/* Main Modal Container: Fixed height, Flex layout */}
+          <div className="relative bg-white w-full max-w-6xl h-[90vh] md:h-[85vh] rounded-4xl shadow-2xl overflow-hidden animate-fade-in-up flex flex-col md:flex-row">
+            
+            {/* Close Button (Floating) */}
+            <button 
+              onClick={handleCloseModal}
+              className="absolute top-4 right-4 md:top-6 md:right-6 p-2 bg-white/80 hover:bg-white backdrop-blur-md rounded-full z-50 transition-all shadow-sm border border-gray-200"
+            >
+              <X className="w-5 h-5 text-gray-800" />
             </button>
 
-            {/* --- LEFT: IMAGE GALLERY --- */}
-            <div className="w-full md:w-1/2 bg-gray-50 p-6 flex flex-col items-center justify-center relative select-none">
+            {/* --- LEFT: GALLERY (Compact on Mobile, Full on Desktop) --- */}
+            {/* h-auto max-h-[40vh] on mobile prevents it from eating the whole screen */}
+            <div className="w-full md:w-7/12 h-auto max-h-[35vh] md:max-h-full md:h-full bg-[#F8F9FA] relative flex flex-col justify-center p-4 md:p-10 shrink-0">
                
-               {/* Main Large Image */}
-               <div className="relative w-full h-64 md:h-80 flex items-center justify-center mb-4">
+               {/* Main Stage */}
+               <div className="flex-1 flex items-center justify-center relative min-h-0">
                  <img 
                     src={currentImage} 
                     alt={product.name} 
-                    className="max-h-full max-w-full object-contain mix-blend-multiply transition-all duration-300" 
+                    className="max-h-full max-w-full object-contain mix-blend-multiply drop-shadow-xl" 
                  />
                  
-                 {/* Navigation Arrows (Only if > 1 image) */}
+                 {/* Navigation Arrows */}
                  {images.length > 1 && (
                    <>
-                     <button onClick={prevImage} className="absolute left-0 p-2 bg-white/80 hover:bg-white rounded-full shadow-md text-gray-700 transition-all hover:scale-110">
-                       <ChevronLeft className="w-6 h-6" />
+                     <button onClick={prevImage} className="absolute left-0 p-2 bg-white/80 rounded-full shadow-md text-gray-800 hover:scale-110 transition-transform">
+                       <ChevronLeft className="w-5 h-5" />
                      </button>
-                     <button onClick={nextImage} className="absolute right-0 p-2 bg-white/80 hover:bg-white rounded-full shadow-md text-gray-700 transition-all hover:scale-110">
-                       <ChevronRight className="w-6 h-6" />
+                     <button onClick={nextImage} className="absolute right-0 p-2 bg-white/80 rounded-full shadow-md text-gray-800 hover:scale-110 transition-transform">
+                       <ChevronRight className="w-5 h-5" />
                      </button>
                    </>
                  )}
                </div>
 
-               {/* Thumbnails Row */}
+               {/* Thumbnails (Hidden on very small screens if needed, or kept compact) */}
                {images.length > 1 && (
-                 <div className="flex gap-2 overflow-x-auto py-2 px-1 max-w-full no-scrollbar">
+                 <div className="flex justify-center gap-2 mt-4 overflow-x-auto py-1 px-2 no-scrollbar shrink-0">
                    {images.map((img, idx) => (
                      <button
                        key={idx}
                        onClick={() => setCurrentImageIndex(idx)}
-                       className={`relative w-14 h-14 rounded-lg overflow-hidden border-2 transition-all shrink-0 ${
-                         currentImageIndex === idx ? 'border-blue-600 ring-2 ring-blue-100' : 'border-gray-200 hover:border-gray-300'
+                       className={`relative w-10 h-10 md:w-16 md:h-16 rounded-lg overflow-hidden border-2 transition-all shrink-0 ${
+                         currentImageIndex === idx 
+                           ? 'border-gray-900 shadow-md scale-105' 
+                           : 'border-transparent bg-white opacity-60 hover:opacity-100'
                        }`}
                      >
-                       <img src={img} alt="thumb" className="w-full h-full object-cover" />
+                       <img src={img} alt="thumb" className="w-full h-full object-cover mix-blend-multiply" />
                      </button>
                    ))}
                  </div>
                )}
             </div>
 
-            {/* --- RIGHT: DETAILS --- */}
-            <div className="w-full md:w-1/2 p-8 flex flex-col overflow-y-auto bg-white">
-              <span className="text-sm font-bold text-blue-600 uppercase tracking-wider mb-2">{product.brand}</span>
-              <h2 className="text-3xl font-bold text-gray-900 mb-4 leading-tight">{product.name}</h2>
+            {/* --- RIGHT: PRODUCT DETAILS (Scrollable Area) --- */}
+            <div className="w-full md:w-5/12 bg-white flex flex-col flex-1 min-h-0 border-l border-gray-100 relative">
               
-              <div className="mb-6 p-5 bg-blue-50 rounded-2xl border border-blue-100">
-                <p className="text-4xl font-extrabold text-gray-900 tracking-tight">
-                  ₹{discountedPrice.toLocaleString()}
-                </p>
-                {product.discount > 0 && (
-                  <p className="text-sm text-gray-500 mt-2 font-medium">
-                    MRP: <span className="line-through">₹{product.price.toLocaleString()}</span> 
-                    <span className="ml-2 bg-green-100 text-green-700 px-2 py-0.5 rounded text-xs font-bold">
-                      {product.discount}% SAVED
+              {/* Scrollable Content */}
+              <div className="flex-1 overflow-y-auto p-6 md:p-10 custom-scrollbar">
+                
+                {/* Header */}
+                <div className="mb-4 md:mb-6">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-xs font-extrabold text-blue-600 tracking-widest uppercase bg-blue-50 px-3 py-1 rounded-full">
+                      {product.brand}
                     </span>
-                  </p>
-                )}
+                    {product.in_stock ? (
+                      <span className="flex items-center gap-1.5 text-xs font-bold text-emerald-600 bg-emerald-50 px-3 py-1 rounded-full">
+                        <CheckCircle2 className="w-3.5 h-3.5" /> In Stock
+                      </span>
+                    ) : (
+                      <span className="text-xs font-bold text-red-600 bg-red-50 px-3 py-1 rounded-full">
+                        Out of Stock
+                      </span>
+                    )}
+                  </div>
+                  
+                  <h2 className="text-2xl md:text-3xl font-extrabold text-gray-900 leading-tight mb-2">
+                    {product.name}
+                  </h2>
+                  
+                  <div className="flex items-center gap-2 text-xs md:text-sm text-gray-500">
+                    <ShieldCheck className="w-4 h-4 text-gray-400" />
+                    <span>Official Warranty Included</span>
+                  </div>
+                </div>
+
+                {/* Price Section */}
+                <div className="mb-6 md:mb-8 p-4 md:p-5 bg-gray-50 rounded-2xl border border-gray-100 flex items-center justify-between">
+                  <div>
+                    <p className="text-xs text-gray-500 font-bold uppercase mb-1">Price</p>
+                    <div className="flex items-baseline gap-2">
+                      <span className="text-2xl md:text-3xl font-extrabold text-gray-900">₹{discountedPrice.toLocaleString()}</span>
+                    </div>
+                  </div>
+                  {product.discount > 0 && (
+                    <div className="text-right">
+                      <span className="block text-xs text-gray-400 line-through decoration-red-400 decoration-2">
+                        ₹{product.price.toLocaleString()}
+                      </span>
+                      <span className="text-xs font-bold text-red-600 bg-red-50 px-2 py-1 rounded-lg mt-1 inline-block">
+                        Save {product.discount}%
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Specs / Description */}
+                <div className="mb-20 md:mb-8">
+                  <h4 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-3 flex items-center gap-2">
+                    <Smartphone className="w-4 h-4" /> Specifications
+                  </h4>
+                  <div className="prose prose-sm text-gray-600 leading-relaxed text-sm">
+                    <p className="whitespace-pre-line">
+                      {product.description || "No specific details available for this product. Please contact the shop owner for more information."}
+                    </p>
+                  </div>
+                </div>
               </div>
 
-              <div className="prose prose-sm text-gray-600 mb-8 grow">
-                <h4 className="text-gray-900 font-bold mb-3 flex items-center gap-2">
-                  <span className="w-1 h-6 bg-blue-600 rounded-full block"></span>
-                  Specifications
-                </h4>
-                <p className="whitespace-pre-line leading-relaxed text-sm">
-                  {product.description || "No specific details available."}
-                </p>
-              </div>
-              
-              <div className="mt-auto space-y-3">
-                <button onClick={handleWhatsApp} className="w-full bg-[#25D366] text-white font-bold py-4 rounded-xl hover:bg-[#128C7E] transition-all flex items-center justify-center gap-3 shadow-lg hover:shadow-[#25D366]/30 hover:-translate-y-1">
-                  <MessageCircle className="w-6 h-6 fill-current" />
-                  <span className="text-lg">Chat on WhatsApp</span>
-                </button>
-                
-                <button onClick={handleNativeShare} className="w-full bg-gray-100 text-gray-700 font-bold py-3 rounded-xl hover:bg-gray-200 transition-colors flex items-center justify-center gap-2">
-                  <Share2 className="w-5 h-5" />
-                  Share with Friends
+              {/* Sticky Footer Actions (Always visible at bottom) */}
+              <div className="p-4 md:p-8 border-t border-gray-100 bg-white/95 backdrop-blur-sm absolute bottom-0 left-0 w-full z-10 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+                <button 
+                  onClick={handleWhatsApp} 
+                  className="w-full bg-[#128C7E] hover:bg-[#075E54] text-white font-bold text-base md:text-lg py-3.5 md:py-4 rounded-xl transition-all shadow-lg shadow-emerald-100 flex items-center justify-center gap-3 transform active:scale-[0.98]"
+                >
+                  <MessageCircle className="w-5 h-5 md:w-6 md:h-6 fill-current" />
+                  <span>Buy on WhatsApp</span>
                 </button>
               </div>
+
             </div>
           </div>
         </div>

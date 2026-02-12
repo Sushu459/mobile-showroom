@@ -2,9 +2,8 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { authService } from "../../services/authService";
-import { useTenant } from "../../context/TenantContext"; // <--- Import Tenant Context
+import { useTenant } from "../../context/TenantContext"; 
 import {
-  
   LogOut,
   LayoutDashboard,
   Menu,
@@ -15,13 +14,13 @@ import {
 
 export default function Navbar() {
   const { isAdmin } = useAuth();
-  const { tenant } = useTenant(); // <--- Get Dynamic Tenant Data
+  const { tenant } = useTenant(); 
   const navigate = useNavigate();
   const location = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Dynamic Colors (Fallbacks if not loaded yet)
+  // Dynamic Colors
   const primaryColor = tenant?.primary_color || "#2563EB"; 
   const secondaryColor = tenant?.secondary_color || "#1E40AF";
 
@@ -57,10 +56,14 @@ export default function Navbar() {
     <>
       <nav
         className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-          isScrolled
-            ? "bg-white/90 backdrop-blur-md shadow-md border-b border-gray-100"
-            : "bg-white border-b border-gray-100"
+          isScrolled 
+            ? "shadow-lg backdrop-blur-sm" 
+            : ""
         }`}
+        style={{ 
+          // Apply Tenant Theme Gradient to the ENTIRE Navbar
+          background: `linear-gradient(to right, ${primaryColor}, ${secondaryColor})`,
+        }}
       >
         <div className="max-w-7xl mx-auto px-6">
           <div className="flex justify-between items-center h-16">
@@ -71,31 +74,19 @@ export default function Navbar() {
               className="flex items-center space-x-3 group"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              {/* Dynamic Logo Box with Glow */}
+              {/* White Logo Box to Pop against Color */}
               <div 
-                className="relative p-2.5 rounded-xl transition-transform group-hover:scale-105 duration-300"
-                style={{ 
-                  background: `linear-gradient(135deg, ${primaryColor}, ${secondaryColor})`,
-                  boxShadow: `0 4px 15px -3px ${primaryColor}66` // Glow effect
-                }}
+                className="p-2.5 rounded-xl bg-white shadow-md transition-transform group-hover:scale-105 duration-300"
               >
-                <Store className="h-5 w-5 text-white" />
+                <Store className="h-5 w-5" style={{ color: primaryColor }} />
               </div>
 
-              {/* Dynamic Shop Name with Gradient Text */}
+              {/* White Text for Contrast */}
               <div className="flex flex-col">
-                <span 
-                  className="text-xl font-extrabold tracking-tight leading-none"
-                  style={{ 
-                    color: '#111827' // Dark gray base
-                  }}
-                >
+                <span className="text-xl font-extrabold tracking-tight leading-none text-white">
                   {tenant?.name || "MobileShowroom"}
                 </span>
-                <span 
-                  className="text-[10px] font-bold uppercase tracking-widest opacity-80"
-                  style={{ color: primaryColor }}
-                >
+                <span className="text-[10px] font-bold uppercase tracking-widest text-white/80">
                   Official Store
                 </span>
               </div>
@@ -106,21 +97,17 @@ export default function Navbar() {
               <div className="hidden md:flex items-center space-x-8 text-sm font-medium">
                 <Link
                   to="/"
-                  className="text-gray-600 hover:text-gray-900 transition-colors relative group"
+                  className="text-white/90 hover:text-white transition-colors relative group"
                 >
                   Home
-                  <span 
-                    className="absolute -bottom-1 left-0 w-0 h-0.5 transition-all group-hover:w-full"
-                    style={{ backgroundColor: primaryColor }}
-                  />
+                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-white transition-all group-hover:w-full" />
                 </Link>
 
+                {/* White Button with Colored Text */}
                 <button
                   onClick={handleContactClick}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-full text-white font-semibold shadow-lg transition-all hover:shadow-xl hover:-translate-y-0.5 active:scale-95"
-                  style={{ 
-                    background: `linear-gradient(to right, ${primaryColor}, ${secondaryColor})` 
-                  }}
+                  className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white font-bold shadow-lg transition-all hover:shadow-xl hover:-translate-y-0.5 active:scale-95"
+                  style={{ color: primaryColor }}
                 >
                   <Phone className="w-4 h-4" />
                   Contact Us
@@ -136,8 +123,8 @@ export default function Navbar() {
                     to="/admin/dashboard"
                     className={`px-4 py-2 rounded-full text-sm font-medium transition flex items-center gap-2 ${
                       location.pathname.includes("dashboard")
-                        ? "bg-gray-100 text-gray-900"
-                        : "text-gray-600 hover:bg-gray-50"
+                        ? "bg-white text-gray-900 shadow-sm"
+                        : "text-white hover:bg-white/10"
                     }`}
                   >
                     <LayoutDashboard className="h-4 w-4" />
@@ -146,17 +133,16 @@ export default function Navbar() {
 
                   <button
                     onClick={handleLogout}
-                    className="px-4 py-2 rounded-full text-sm font-medium text-red-600 hover:bg-red-50 transition flex items-center gap-2"
+                    className="px-4 py-2 rounded-full text-sm font-medium text-white/90 hover:bg-white/10 hover:text-white transition flex items-center gap-2"
                   >
                     <LogOut className="h-4 w-4" />
                     Logout
                   </button>
                 </>
               ) : (
-                // Only show Admin Login if NOT logged in (Desktop)
                 <Link
                   to="/admin/login"
-                  className="text-sm font-medium text-gray-500 hover:text-gray-900 transition"
+                  className="text-sm font-medium text-white/80 hover:text-white transition"
                 >
                   Partner Login
                 </Link>
@@ -167,7 +153,7 @@ export default function Navbar() {
             <div className="md:hidden">
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition"
+                className="p-2 text-white hover:bg-white/10 rounded-lg transition"
               >
                 {isMobileMenuOpen ? (
                   <X className="h-6 w-6" />
@@ -235,7 +221,7 @@ export default function Navbar() {
       </nav>
 
       {/* Spacer to prevent content overlap */}
-      <div className="h-20" />
+      <div className="h-16" />
     </>
   );
 }

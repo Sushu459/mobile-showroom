@@ -93,7 +93,8 @@ export default function Home() {
   if (!tenant) return <div className="text-center p-20 text-gray-500">Store Not Found</div>;
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans">
+    <div className="min-h-screen font-sans bg-linear-to-br from-slate-300 via-pink-100 to-orange-200">
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
 
         {/* Dynamic Carousel */}
@@ -144,7 +145,7 @@ export default function Home() {
           <div className="flex-1 w-full">
 
             {/* 🔥 TOOLBAR WITH SEARCH */}
-            <div className="sticky top-17.5 z-30 bg-gray-50/95 backdrop-blur-md py-2 mb-4">
+            <div className="sticky top-17.5 z-30 backdrop-blur-md py-2 mb-4">
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 bg-white p-4 rounded-xl shadow-sm border border-gray-100">
 
                 {/* Left Section: Filter Button & Search */}

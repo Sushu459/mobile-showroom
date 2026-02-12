@@ -3,11 +3,13 @@ import { useNavigate } from "react-router-dom";
 import type { Product } from "../../types/product";
 import { productService } from "../../services/productService";
 import { Edit2, Trash2, Search, ChevronLeft, ChevronRight, Eye, EyeOff } from "lucide-react";
-import { useTenant } from "../../context/TenantContext"; // Import Tenant Context
+import { useTenant } from "../../context/TenantContext";
+import { useAuth } from "../../hooks/useAuth"; // Added useAuth for secure ID access
 
 export default function ManageProducts() {
   const navigate = useNavigate();
-  const { tenant, loading: tenantLoading } = useTenant(); // Get Current Shop
+  const { tenant, loading: tenantLoading } = useTenant();
+  const {} = useAuth(); // Get authenticated user details
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -16,6 +18,7 @@ export default function ManageProducts() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 7; 
 
+  // Reload when tenant or user changes
   useEffect(() => {
     if (tenant) {
       loadProducts();
@@ -28,23 +31,28 @@ export default function ManageProducts() {
   }, [searchTerm]);
 
   const loadProducts = async () => {
-    if (!tenant) return;
+    // Prioritize the authenticated user's tenant_id for security, fall back to context
+    const currentTenantId = tenant?.tenant_id;
+
+    if (!currentTenantId) return;
 
     try {
       setLoading(true);
-      // Pass tenant_id to fetch ONLY this shop's products
-      const data = await productService.getAllProducts(tenant.tenant_id);
+      // 1. API Fetch: Request products for this specific tenant
+      const data = await productService.getAllProducts(currentTenantId);
+      
       setProducts(data);
     } catch (error) {
       console.error("Failed to load products", error);
-      alert("Failed to load products");
+      // Optional: don't show alert on initial load failures to avoid spamming user
     } finally {
       setLoading(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (!tenant) return;
+    const currentTenantId = tenant?.tenant_id;
+    if (!currentTenantId) return;
 
     if (!window.confirm("Are you sure you want to delete this product?")) {
       return;
@@ -52,8 +60,8 @@ export default function ManageProducts() {
 
     try {
       // Pass tenant_id to ensure we don't accidentally delete another shop's item
-      await productService.deleteProduct(id, tenant.tenant_id);
-      setProducts(products.filter((p) => p.id !== id));
+      await productService.deleteProduct(id, currentTenantId);
+      setProducts((prev) => prev.filter((p) => p.id !== id));
       alert("Product deleted successfully");
     } catch (error) {
       console.error("Failed to delete product", error);
@@ -61,7 +69,7 @@ export default function ManageProducts() {
     }
   };
 
-  // Filter Logic
+  // Filter Logic (Search)
   const filteredProducts = products.filter((product) =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     product.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -81,15 +89,19 @@ export default function ManageProducts() {
       <div className="min-h-screen bg-linear-to-br from-slate-50 via-white to-slate-100 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 font-medium">Loading products...</p>
+          <p className="text-gray-600 font-medium">Loading your products...</p>
         </div>
       </div>
     );
   }
 
+  // Ensure we have a tenant context before rendering main UI
   if (!tenant) {
-      return <div className="text-center p-10 text-red-500">Error: Shop context not found.</div>;
+      return <div className="text-center p-10 text-red-500">Error: Shop context not found. Please log in.</div>;
   }
+
+  // Use tenant name from context or user data for display
+  const shopName = tenant?.name || "Your Shop";
 
   return (
     <div className="min-h-screen bg-linear-to-br from-slate-50 via-white to-slate-100 py-12 px-4 sm:px-6 lg:px-8">
@@ -100,7 +112,7 @@ export default function ManageProducts() {
             Manage Products
           </h1>
           <p className="text-gray-600 text-lg">
-            View, edit, and manage inventory for <span className="font-semibold text-blue-600">{tenant.name}</span>
+            View, edit, and manage inventory for <span className="font-semibold text-blue-600">{shopName}</span>
           </p>
         </div>
 
@@ -121,7 +133,7 @@ export default function ManageProducts() {
           
           <button
             onClick={() => navigate("/admin/add")}
-            className="w-full md:w-auto inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-xl transition duration-200 shadow-md hover:shadow-lg"
+            className="w-full md:w-auto inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-xl transition duration-200 shadow-md hover:shadow-lg cursor-pointer"
           >
             <svg
               className="h-5 w-5"
@@ -146,7 +158,7 @@ export default function ManageProducts() {
               No products found
             </p>
             <p className="text-gray-500 mb-6">
-              Start by adding your first mobile product to your store
+              Start by adding your first product to {shopName}
             </p>
           </div>
         ) : (
@@ -228,14 +240,14 @@ export default function ManageProducts() {
                               <div className="flex items-center gap-2">
                                 <button
                                   onClick={() => navigate(`/admin/edit/${product.id}`)}
-                                  className="inline-flex items-center gap-1 px-3 py-2 bg-blue-500 hover:bg-blue-700 text-white rounded-lg font-semibold transition duration-200 shadow-md hover:shadow-lg text-sm"
+                                  className="inline-flex items-center gap-1 px-3 py-2 bg-blue-500 hover:bg-blue-700 text-white rounded-lg font-semibold transition duration-200 shadow-md hover:shadow-lg text-sm cursor-pointer"
                                 >
                                   <Edit2 className="h-4 w-4" />
                                   Edit
                                 </button>
                                 <button
                                   onClick={() => handleDelete(product.id)}
-                                  className="inline-flex items-center gap-1 px-3 py-2 bg-red-400 hover:bg-red-700 text-white rounded-lg font-semibold transition duration-200 shadow-md hover:shadow-lg text-sm"
+                                  className="inline-flex items-center gap-1 px-3 py-2 bg-red-400 hover:bg-red-700 text-white rounded-lg font-semibold transition duration-200 shadow-md hover:shadow-lg text-sm cursor-pointer"
                                 >
                                   <Trash2 className="h-4 w-4" />
                                 </button>
@@ -270,7 +282,7 @@ export default function ManageProducts() {
                   <button
                     onClick={() => paginate(currentPage - 1)}
                     disabled={currentPage === 1}
-                    className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                    className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition cursor-pointer"
                   >
                     <ChevronLeft className="h-5 w-5 text-gray-600" />
                   </button>
@@ -280,7 +292,7 @@ export default function ManageProducts() {
                       <button
                         key={i + 1}
                         onClick={() => paginate(i + 1)}
-                        className={`w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition ${
+                        className={`w-8 h-8 flex items-center justify-center rounded-lg text-sm font-medium transition cursor-pointer ${
                           currentPage === i + 1
                             ? "bg-blue-600 text-white shadow-md"
                             : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-300"
@@ -294,7 +306,7 @@ export default function ManageProducts() {
                   <button
                     onClick={() => paginate(currentPage + 1)}
                     disabled={currentPage === totalPages}
-                    className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                    className="p-2 border border-gray-300 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed transition cursor-pointer"
                   >
                     <ChevronRight className="h-5 w-5 text-gray-600" />
                   </button>
