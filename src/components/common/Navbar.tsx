@@ -23,6 +23,8 @@ export default function Navbar() {
   // Dynamic Colors
   const primaryColor = tenant?.primary_color || "#2563EB"; 
   const secondaryColor = tenant?.secondary_color || "#1E40AF";
+  const mobileNumber = tenant?.mobile_number || "";
+
 
   useEffect(() => {
     const handleScroll = () => {
@@ -39,18 +41,16 @@ export default function Navbar() {
   };
 
   const handleContactClick = () => {
-    setIsMobileMenuOpen(false);
-    if (location.pathname !== "/") {
-      navigate("/");
-      setTimeout(() => {
-        const section = document.getElementById("contact");
-        section?.scrollIntoView({ behavior: "smooth" });
-      }, 100);
-    } else {
-      const section = document.getElementById("contact");
-      section?.scrollIntoView({ behavior: "smooth" });
-    }
-  };
+  setIsMobileMenuOpen(false);
+
+  if (!mobileNumber) {
+    alert("Contact number not available");
+    return;
+  }
+
+  window.location.href = `tel:${mobileNumber.replace(/\s+/g, "")}`;
+};
+
 
   return (
     <>

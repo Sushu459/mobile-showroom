@@ -3,13 +3,18 @@ import { useNavigate } from "react-router-dom";
 import { authService } from "../../services/authService";
 import { supabase } from "../../services/supabase"; 
 import { Lock } from "lucide-react";
+import { useTenant } from "../../context/TenantContext"; // 1. Import Tenant Context
 
 export default function AdminLogin() {
+  const { tenant } = useTenant(); // 2. Get Tenant Data
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  // 3. Define Dynamic Color (Fallback to Blue if loading/missing)
+  const primaryColor = tenant?.primary_color || "#2563EB"; 
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -40,19 +45,18 @@ export default function AdminLogin() {
       // ---------------------------------------------------------
       // 2. Domain Security Check (With Localhost Support)
       // ---------------------------------------------------------
-      const currentDomain = window.location.origin; // e.g., http://localhost:5173
+      const currentDomain = window.location.origin;
 
       // IF LOCALHOST: Skip the strict domain check to allow testing
       if (currentDomain.includes("localhost")) {
         console.warn("⚠️ Localhost detected: Bypassing domain security check.");
-        // We allow the login because we can't check domain ownership locally
       } 
       // IF PRODUCTION: Strictly check if this domain belongs to the user
       else {
         const { data: domainTenant } = await supabase
           .from('tenants')
           .select('tenant_id, name')
-          .eq('domain', currentDomain) // Ensure your DB has 'https://...'
+          .eq('domain', currentDomain)
           .single();
 
         if (!domainTenant) {
@@ -72,7 +76,6 @@ export default function AdminLogin() {
     } catch (err: any) {
       console.error("Login Error:", err);
       setError(err.message || "Invalid credentials");
-      // Optional: Logout if we failed partway through to clear state
       if (err.message !== "Invalid credentials") {
           await authService.logout();
       }
@@ -85,13 +88,18 @@ export default function AdminLogin() {
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-10 space-y-6">
         
-        {/* Icon */}
+        {/* Icon Header */}
         <div className="flex flex-col items-center">
-          <div className="h-14 w-14 bg-blue-600 rounded-full flex items-center justify-center shadow-md">
+          <div 
+            className="h-14 w-14 rounded-full flex items-center justify-center shadow-md transition-colors duration-300"
+            style={{ backgroundColor: primaryColor }} // Dynamic Background
+          >
             <Lock className="h-6 w-6 text-white" />
           </div>
           <h2 className="mt-6 text-2xl font-bold text-gray-900">Admin Portal</h2>
-          <p className="text-sm text-gray-500 mt-1">Secure access for authorized users only</p>
+          <p className="text-sm text-gray-500 mt-1">
+             Login to <span className="font-semibold">{tenant?.name || 'Dashboard'}</span>
+          </p>
         </div>
 
         {/* Form */}
@@ -107,7 +115,8 @@ export default function AdminLogin() {
               type="email"
               required
               placeholder="Email address"
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+              className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 transition"
+              style={{ '--tw-ring-color': primaryColor } as React.CSSProperties} // Dynamic Focus Ring
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={loading}
@@ -116,7 +125,8 @@ export default function AdminLogin() {
               type="password"
               required
               placeholder="Password"
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
+              className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 transition"
+              style={{ '--tw-ring-color': primaryColor } as React.CSSProperties} // Dynamic Focus Ring
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={loading}
@@ -126,7 +136,8 @@ export default function AdminLogin() {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-xl transition shadow-sm flex justify-center items-center ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+            className={`w-full text-white font-semibold py-3 rounded-xl transition shadow-sm flex justify-center items-center hover:opacity-90 hover:shadow-md ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
+            style={{ backgroundColor: primaryColor }} // Dynamic Background
           >
             {loading ? "Verifying..." : "Sign In"}
           </button>
