@@ -21,6 +21,10 @@ export default function Home() {
   const [sortBy, setSortBy] = useState('newest');
   const [searchTerm, setSearchTerm] = useState(''); // Search State
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+  const [displayedName, setDisplayedName] = useState("");
+  const primaryColor = tenant?.primary_color || "#7C3AED"; // fallback
+
+
 
   useEffect(() => {
     if (tenant) {
@@ -38,6 +42,46 @@ export default function Home() {
       load();
     }
   }, [tenant]);
+
+ useEffect(() => {
+  if (!tenant?.name) return;
+
+  const fullText = tenant.name;
+  let index = 0;
+  let isDeleting = false;
+  let typingSpeed = 120; // normal typing speed
+
+  const typeEffect = () => {
+    setDisplayedName(fullText.slice(0, index));
+
+    if (!isDeleting) {
+      index++;
+      typingSpeed = 120; // typing speed
+
+      if (index > fullText.length) {
+        isDeleting = true;
+        typingSpeed = 1200; // pause before deleting
+      }
+    } else {
+      index--;
+      typingSpeed = 60; // delete faster than typing
+
+      if (index === 0) {
+        isDeleting = false;
+        typingSpeed = 500; // pause before retyping
+      }
+    }
+
+    timeout = setTimeout(typeEffect, typingSpeed);
+  };
+
+  let timeout = setTimeout(typeEffect, typingSpeed);
+
+  return () => clearTimeout(timeout);
+}, [tenant?.name]);
+
+
+
 
   const uniqueBrands = useMemo(() => {
     return Array.from(new Set(products.map(p => p.brand))).sort();
@@ -102,7 +146,20 @@ export default function Home() {
 
         {/* Dynamic Shop Header */}
         <div className="text-center mb-8">
-            <h1 className="text-3xl font-bold text-gray-900">{tenant.name}</h1>
+            <h1
+  className="text-3xl font-bold transition-colors duration-500"
+  style={{ color: primaryColor }}
+>
+  {displayedName}
+  <span
+    className="animate-pulse ml-1"
+    style={{ color: primaryColor }}
+  >
+    |
+  </span>
+</h1>
+
+
             <p className="text-gray-500">Official Online Store</p>
         </div>
         
