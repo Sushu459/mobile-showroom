@@ -5,6 +5,7 @@ import Navbar from "./components/common/Navbar";
 import Footer from "./components/common/Footer";
 import AppRoutes from "./routes/AppRoutes";
 import ThemeController from "./utils/ThemeController";
+import Chatbot from "./components/common/Chatbot";
 
 // 1. Import your new CSS file here
 import "./App.css"; 
@@ -16,7 +17,7 @@ function LayoutWrapper() {
     // 2. Use the clean class name defined in App.css
     <div className="app-layout">
       <Navbar />
-      
+      <Chatbot />
       {/* 3. Use the clean class name for the main area */}
       <main className="main-content">
         <AppRoutes />
