@@ -4,14 +4,21 @@ import { TenantProvider } from './context/TenantContext';
 import Navbar from "./components/common/Navbar";
 import Footer from "./components/common/Footer";
 import AppRoutes from "./routes/AppRoutes";
+import ThemeController from "./utils/ThemeController";
+
+// 1. Import your new CSS file here
+import "./App.css"; 
 
 function LayoutWrapper() {
   const location = useLocation();
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-50">
+    // 2. Use the clean class name defined in App.css
+    <div className="app-layout">
       <Navbar />
-      <main className="grow">
+      
+      {/* 3. Use the clean class name for the main area */}
+      <main className="main-content">
         <AppRoutes />
       </main>
 
@@ -24,13 +31,12 @@ function LayoutWrapper() {
 function App() {
   return (
     <BrowserRouter>
-    <TenantProvider>
-      <AuthProvider>
-        
+      <TenantProvider>
+        <AuthProvider>
+          <ThemeController />
           <LayoutWrapper />
-        
-      </AuthProvider>
-    </TenantProvider>
+        </AuthProvider>
+      </TenantProvider>
     </BrowserRouter>
   );
 }

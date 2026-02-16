@@ -1,0 +1,42 @@
+/* CategoryFilter.css */
+
+.filter-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;          /* gap-2 */
+  margin-bottom: 2rem;  /* mb-8 */
+  justify-content: center;
+}
+
+/* Responsive alignment: sm:justify-start */
+@media (min-width: 640px) {
+  .filter-container {
+    justify-content: flex-start;
+  }
+}
+
+.filter-btn {
+  padding: 0.5rem 1rem; /* px-4 py-2 */
+  border-radius: 9999px; /* rounded-full */
+  font-size: 0.875rem;   /* text-sm */
+  font-weight: 500;      /* font-medium */
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+/* State: Selected */
+.filter-btn.active {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+/* State: Not Selected */
+.filter-btn.inactive {
+  background-color: var(--bg-card);
+  color: var(--text-main);
+}
+
+.filter-btn.inactive:hover {
+  background-color: var(--border-color);
+}

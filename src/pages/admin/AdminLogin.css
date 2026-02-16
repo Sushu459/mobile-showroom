@@ -1,0 +1,180 @@
+/* AdminLogin.css */
+
+/* --- Page Container --- */
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-body);
+  transition: background-color 0.3s ease;
+  padding-left: 1rem; /* px-4 */
+  padding-right: 1rem;
+}
+
+body.light .login-page {
+  background-color: #f3f4f6;
+}
+
+body.dark .login-page {
+  background-color: var(--bg-body);
+}
+
+.login-card {
+  width: 100%;
+  max-width: 28rem; /* max-w-md */
+  background-color: var(--bg-card);
+  border-radius: 1rem; /* rounded-2xl */
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); /* shadow-xl */
+  border: 1px solid var(--border-color);
+  padding: 2.5rem; /* p-10 */
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem; /* space-y-6 */
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* --- Header Section --- */
+.login-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.icon-wrapper {
+  height: 3.5rem; /* h-14 */
+  width: 3.5rem; /* w-14 */
+  border-radius: 9999px; /* rounded-full */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); /* shadow-md */
+  transition: background-color 0.3s;
+}
+
+.lock-icon {
+  height: 1.5rem; /* h-6 */
+  width: 1.5rem; /* w-6 */
+  color: white;
+}
+
+.login-title {
+  margin-top: 1.5rem; /* mt-6 */
+  font-size: 1.5rem; /* text-2xl */
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+.login-subtitle {
+  font-size: 0.875rem; /* text-sm */
+  color: var(--text-muted);
+  margin-top: 0.25rem; /* mt-1 */
+}
+
+.tenant-name {
+  font-weight: 600;
+}
+
+/* --- Form Section --- */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem; /* space-y-5 */
+}
+
+.error-box {
+  background-color: rgba(254, 242, 242, 0.1);
+  border: 1px solid var(--border-color);
+  border-radius: 0.5rem; /* rounded-lg */
+  padding: 0.75rem; /* p-3 */
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+body.dark .error-box {
+  background-color: rgba(220, 38, 38, 0.1);
+  border-color: rgba(220, 38, 38, 0.3);
+}
+
+.error-text {
+  color: #dc2626;
+  font-size: 0.875rem; /* text-sm */
+  text-align: center;
+  font-weight: 500;
+  margin: 0;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* space-y-4 */
+}
+
+.login-input {
+  width: 100%;
+  padding: 0.75rem 1rem; /* px-4 py-3 */
+  border: 1px solid var(--border-color);
+  border-radius: 0.75rem; /* rounded-xl */
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--text-main);
+  font-size: 0.875rem; /* text-sm */
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+body.light .login-input {
+  background-color: #ffffff;
+  color: #111827;
+}
+
+body.dark .login-input {
+  background-color: rgba(30, 41, 59, 0.5);
+  color: #ffffff;
+}
+
+.login-input::placeholder {
+  color: var(--text-muted);
+}
+
+.login-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--tw-ring-color); /* focus:ring-2 */
+}
+
+.login-btn {
+  width: 100%;
+  color: white;
+  font-weight: 600;
+  padding-top: 0.75rem; /* py-3 */
+  padding-bottom: 0.75rem;
+  border-radius: 0.75rem; /* rounded-xl */
+  transition: all 0.2s;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  cursor: pointer;
+}
+/* --- DARK MODE OVERRIDES --- */
+
+/* Force Login Button to be Blue in Dark Mode */
+body.dark .login-btn {
+  background-color: #3b82f6 !important; /* Bright Blue */
+  color: #ffffff !important;             /* White Text */
+  border: 1px solid #2563eb;             /* Slight border for definition */
+}
+
+/* Hover Effect for Dark Mode */
+body.dark .login-btn:hover {
+  background-color: #2563eb !important; /* Darker Blue on Hover */
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.5); /* Blue Glow */
+}
+
+.login-btn:hover {
+  opacity: 0.9;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); /* hover:shadow-md */
+}
+
+.login-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

@@ -1,0 +1,174 @@
+/* EditProduct.css */
+
+/* --- Main Container --- */
+.edit-product-container {
+  max-width: 56rem; /* max-w-4xl */
+  margin: 0 auto;
+  padding: 2rem 1rem; /* py-8 px-4 */
+}
+
+@media (min-width: 640px) {
+  .edit-product-container {
+    padding-left: 1.5rem; /* sm:px-6 */
+    padding-right: 1.5rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .edit-product-container {
+    padding-left: 2rem; /* lg:px-8 */
+    padding-right: 2rem;
+  }
+}
+
+/* --- Header Section --- */
+.edit-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem; /* mb-8 */
+}
+
+.edit-title {
+  font-size: 1.875rem; /* text-3xl */
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.back-link {
+  font-size: 0.875rem; /* text-sm */
+  font-weight: 500;
+  color: #2563eb; /* text-blue-600 */
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.back-link:hover {
+  color: #1e40af; /* hover:text-blue-800 */
+}
+
+/* --- Form Wrapper --- */
+.edit-form-wrapper {
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 0;
+}
+
+/* EditProduct.css */
+
+/* Alignment for the top header section */
+.edit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  /* Max-width matches the form-container width for perfect alignment */
+  max-width: 800px; 
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 1rem;
+}
+
+.edit-title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #ffffff; /* Ensures title is white in dark theme */
+  margin: 0;
+}
+
+.product-name-highlight {
+  color: #94a3b8; /* Subtle grey for the specific product name */
+  font-size: 1.25rem;
+  font-weight: 400;
+}
+
+.back-btn-link {
+  color: #3b82f6;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: opacity 0.2s;
+}
+
+.back-btn-link:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+.edit-loader-centered {
+  display: flex;
+  justify-content: center;
+  padding: 5rem;
+}
+
+.edit-error-text {
+  text-align: center;
+  color: #ef4444;
+  padding: 3rem;
+  font-weight: 500;
+}
+
+
+/* EditProduct.css */
+
+/* Alignment for the top header section */
+.edit-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  /* Matches the max-width of ProductForm for perfect alignment */
+  max-width: 800px; 
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 1.5rem;
+}
+
+.edit-title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: #ffffff; /* Explicitly white for dark theme */
+  margin: 0;
+}
+
+.product-name-highlight {
+  color: #94a3b8; /* Subtle grey for the mobile name */
+  font-size: 1.25rem;
+  font-weight: 400;
+  margin-left: 0.5rem;
+}
+
+.back-btn-dashboard {
+  color: #3b82f6;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: opacity 0.2s;
+}
+
+.back-btn-dashboard:hover {
+  opacity: 0.8;
+  text-decoration: underline;
+}
+
+/* Loader and Error styling */
+.edit-loader-centered {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.edit-error-container {
+  text-align: center;
+  padding: 5rem;
+  color: #ffffff;
+}

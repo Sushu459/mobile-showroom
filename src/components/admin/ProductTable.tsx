@@ -1,3 +1,5 @@
+import "./ProductTable.css"; // The only new line
+
 interface Product {
   id: number;
   name: string;
@@ -15,58 +17,58 @@ interface Props {
 
 export default function ProductTable({ products, onDelete }: Props) {
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
+    <div className="table-wrapper">
       
-      <div className="px-6 py-4 border-b border-gray-200">
-        <h2 className="text-lg font-semibold text-gray-800">
+      <div className="table-header">
+        <h2 className="table-title">
           Product List
         </h2>
       </div>
 
-      <table className="w-full text-sm text-left">
-        <thead className="bg-gray-50 text-gray-600 uppercase text-xs tracking-wider">
+      <table className="styled-table">
+        <thead className="table-head">
           <tr>
-            <th className="px-6 py-4">Product</th>
-            <th className="px-6 py-4">Category</th>
-            <th className="px-6 py-4">Price</th>
-            <th className="px-6 py-4 text-right">Action</th>
+            <th className="th-cell">Product</th>
+            <th className="th-cell">Category</th>
+            <th className="th-cell">Price</th>
+            <th className="th-cell text-right">Action</th>
           </tr>
         </thead>
 
-        <tbody className="divide-y divide-gray-200">
+        <tbody className="tbody-divider">
           {products.map((product) => (
-            <tr key={product.id} className="hover:bg-gray-50 transition">
+            <tr key={product.id} className="table-row">
               
-              <td className="px-6 py-4 flex items-center gap-4">
+              <td className="td-product">
                 {product.image && (
                   <img
                     src={product.image}
                     alt={product.name}
-                    className="w-12 h-12 rounded-lg object-cover"
+                    className="product-img"
                   />
                 )}
                 <div>
-                  <p className="font-medium text-gray-800">
+                  <p className="product-name">
                     {product.name}
                   </p>
-                  <p className="text-xs text-gray-500">
+                  <p className="product-brand">
                     {product.brand}
                   </p>
                 </div>
               </td>
 
-              <td className="px-6 py-4 text-gray-600">
+              <td className="td-regular">
                 {product.category}
               </td>
 
-              <td className="px-6 py-4 font-medium text-gray-800">
+              <td className="td-price">
                 ₹{product.price}
               </td>
 
-              <td className="px-6 py-4 text-right">
+              <td className="td-action">
                 <button
                   onClick={() => onDelete(product.id)}
-                  className="text-red-500 hover:text-red-700 transition"
+                  className="delete-btn"
                 >
                   Delete
                 </button>

@@ -1,0 +1,915 @@
+/* HeroCarousel.css */
+
+/* --- Keyframes --- */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* --- Loader --- */
+.hero-loader-container {
+  width: 100%;
+  height: 15rem; /* h-60 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-body);
+  border-radius: 1rem; /* rounded-2xl */
+  margin-bottom: 3rem; /* mb-12 */
+}
+
+body.light .hero-loader-container {
+  background-color: #f3f4f6; /* bg-gray-100 */
+}
+
+body.dark .hero-loader-container {
+  background-color: #1e293b;
+}
+
+.spinner {
+  width: 2rem;
+  height: 2rem;
+  color: #2563eb; /* text-blue-600 */
+  animation: spin 1s linear infinite;
+}
+
+/* --- Carousel Container --- */
+.carousel-root {
+  position: relative;
+  width: 100%;
+  height: 400px; /* Custom height replacing h-95 */
+  overflow: hidden;
+  border-radius: 1rem; /* rounded-2xl */
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); /* shadow-2xl */
+  margin-bottom: 3rem; /* mb-12 */
+  background-color: #111827; /* bg-gray-900 */
+  border: 1px solid #1f2937; /* border-gray-800 */
+}
+
+body.dark .carousel-root {
+  background-color: #1e293b;
+}
+
+@media (min-width: 768px) {
+  .carousel-root {
+    height: 400px;
+  }
+}
+
+/* --- Slide Item --- */
+.slide-item {
+  position: absolute;
+  inset: 0;
+  transition: opacity 1000ms ease-in-out;
+}
+
+.slide-item.active {
+  opacity: 1;
+  z-index: 10;
+}
+
+.slide-item.inactive {
+  opacity: 0;
+  z-index: 0;
+}
+
+/* Background Image */
+.slide-bg {
+  position: absolute;
+  inset: 0;
+  background-position: center;
+  background-size: cover;
+  transform: scale(1.1);
+  filter: blur(24px); /* blur-xl */
+  opacity: 0.4;
+  transition: transform 10s linear;
+}
+
+/* Gradient Overlay */
+.slide-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgba(0,0,0,0.9), rgba(0,0,0,0.5), transparent);
+  z-index: 10;
+}
+
+/* Product Image (Right Side) */
+.hero-product-img {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 58.666%; /* w-7/12 */
+  object-fit: contain;
+  object-position: right center;
+  z-index: 0;
+  mix-blend-mode: lighten;
+  opacity: 0.9;
+  padding: 2rem;
+}
+/* --- DARK MODE OVERRIDE FOR CAROUSEL --- */
+
+body.dark .carousel-root {
+  /* Change this to a visible Grey */
+  background-color: #374151; 
+  
+  /* Make the border slightly lighter to define the box */
+  border: 1px solid #4b5563; 
+}
+
+body.dark .hero-product-img {
+  mix-blend-mode: normal;
+}
+
+/* Text Content */
+.hero-content {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 2rem; /* px-8 */
+  color: white;
+  max-width: 42rem; /* max-w-2xl */
+}
+
+@media (min-width: 768px) {
+  .hero-content {
+    padding: 0 4rem; /* md:px-16 */
+  }
+}
+
+.hero-anim-wrapper {
+  animation: fadeInUp 0.5s ease-out forwards;
+}
+
+/* Badges */
+.hero-badge {
+  display: inline-block;
+  padding: 0.25rem 1rem; /* px-4 py-1 */
+  margin-bottom: 1rem;
+  font-size: 0.875rem; /* text-sm */
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  border-radius: 9999px;
+  width: fit-content;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+}
+
+.badge-red {
+  background-color: #dc2626; /* bg-red-600 */
+  box-shadow: 0 4px 6px -1px rgba(127, 29, 29, 0.5);
+}
+
+.badge-blue {
+  background-color: #2563eb; /* bg-blue-600 */
+  box-shadow: 0 4px 6px -1px rgba(30, 58, 138, 0.5);
+}
+/* --- DARK MODE BUTTON OVERRIDE --- */
+
+/* Force the button to be Blue in Dark Mode */
+body.dark .hero-btn {
+  background-color: #2563eb !important; /* Bright Blue */
+  color: #ffffff !important;             /* White Text */
+  border: 1px solid #1d4ed8;             /* Darker Blue Border */
+  box-shadow: 0 10px 20px -5px rgba(37, 99, 235, 0.4); /* Blue Glow */
+}
+
+/* Hover Effect in Dark Mode */
+body.dark .hero-btn:hover {
+  background-color: #1d4ed8 !important; /* Deep Blue */
+  box-shadow: 0 0 20px rgba(37, 99, 235, 0.6); /* Stronger Glow */
+  transform: scale(1.05);
+}
+
+/* Typography */
+.hero-title {
+  font-size: 2.25rem; /* text-4xl */
+  font-weight: 800;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  text-shadow: 0 10px 15px rgba(0,0,0,0.5); /* drop-shadow-2xl */
+  color: white;
+}
+
+body.dark .hero-title {
+  color: #ffffff;
+}
+
+@media (min-width: 768px) {
+  .hero-title {
+    font-size: 3.75rem; /* md:text-6xl */
+  }
+}
+
+.hero-subtitle {
+  font-size: 1.25rem; /* text-xl */
+  color: #d1d5db; /* text-gray-300 */
+  font-weight: 500;
+  margin-bottom: 2rem;
+  text-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+
+@media (min-width: 768px) {
+  .hero-subtitle {
+    font-size: 1.5rem; /* md:text-2xl */
+  }
+}
+
+/* CTA Button */
+.hero-btn {
+  
+  color: white;
+  padding: 0.875rem 2rem;
+  border-radius: 9999px;
+  font-weight: 700;
+  width: fit-content;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  box-shadow: 0 20px 25px -5px rgba(96, 165, 250, 0.3);
+  transition: all 0.2s;
+  border: none;
+  cursor: pointer;
+}
+
+.hero-btn:hover {
+  background-color: #3b82f6;
+  transform: scale(1.05);
+}
+
+.hero-btn:active {
+  transform: scale(0.95);
+}
+
+/* --- Navigation --- */
+.nav-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 30;
+  padding: 0.75rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 9999px;
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  transition: all 0.2s;
+  opacity: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.carousel-root:hover .nav-arrow {
+  opacity: 1;
+}
+
+.nav-arrow:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.nav-arrow:active {
+  transform: translateY(-50%) scale(0.9);
+}
+
+.nav-prev { left: 1rem; }
+.nav-next { right: 1rem; }
+
+.nav-dots {
+  position: absolute;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 30;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.nav-dot {
+  height: 0.375rem; /* h-1.5 */
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.nav-dot.active {
+  width: 2rem; /* w-8 */
+  background-color: white;
+}
+
+.nav-dot.inactive {
+  width: 0.5rem; /* w-2 */
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+.nav-dot.inactive:hover {
+  background-color: rgba(255, 255, 255, 0.6);
+}
+
+/* --- MODAL --- */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modal-backdrop {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  cursor: pointer;
+}
+
+.modal-container {
+  position: relative;
+  background-color: var(--bg-card);
+  border-radius: 1rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  width: 100%;
+  max-width: 56rem; /* max-w-4xl */
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  max-height: 90vh;
+  animation: fadeInUp 0.3s ease-out;
+}
+
+@media (min-width: 768px) {
+  .modal-container {
+    flex-direction: row;
+  }
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.5rem;
+  background-color: var(--bg-body);
+  border-radius: 9999px;
+  z-index: 30;
+  border: none;
+  cursor: pointer;
+}
+
+.modal-close-btn:hover {
+  background-color: var(--border-color);
+}
+
+/* Modal Left (Image) */
+.modal-left {
+  width: 100%;
+  background-color: var(--bg-body);
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+@media (min-width: 768px) {
+  .modal-left {
+    width: 50%;
+  }
+}
+
+.modal-img-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-main-img {
+  max-height: 60vh;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+
+body.dark .modal-main-img {
+  mix-blend-mode: normal;
+}
+
+.modal-arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  padding: 0.5rem;
+  background-color: var(--bg-card);
+  border-radius: 9999px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  z-index: 20;
+  border: none;
+  cursor: pointer;
+}
+
+.modal-arrow:hover { background-color: rgba(96, 165, 250, 0.1); }
+.modal-arrow-left { left: 0; }
+.modal-arrow-right { right: 0; }
+
+.modal-dots {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 0.5rem;
+}
+
+.modal-dot {
+  height: 0.5rem; /* h-2 */
+  border-radius: 9999px;
+  transition: all 0.2s;
+}
+
+.modal-dot.active {
+  width: 1.5rem; /* w-6 */
+  background-color: var(--primary-color);
+}
+
+.modal-dot.inactive {
+  width: 0.5rem; /* w-2 */
+  background-color: var(--border-color);
+}
+
+/* Modal Right (Details) */
+.modal-right {
+  width: 100%;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+@media (min-width: 768px) {
+  .modal-right {
+    width: 50%;
+  }
+}
+
+.modal-brand {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+.modal-title {
+  font-size: 1.5rem; /* text-2xl */
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 1rem;
+  margin-top: 0;
+}
+
+body.dark .modal-title {
+  color: #ffffff;
+}
+
+.modal-price-box {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  background-color: var(--bg-body);
+  border-radius: 0.75rem;
+  border: 1px solid var(--border-color);
+}
+
+.price-main {
+  font-size: 1.875rem; /* text-3xl */
+  font-weight: 800;
+  color: #111827;
+  margin: 0;
+}
+
+body.dark .price-main {
+  color: #ffffff;
+}
+
+.price-sub {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-top: 0.25rem;
+  margin-bottom: 0;
+}
+
+.strike { text-decoration: line-through; }
+.discount-tag { color: #16a34a; font-weight: 700; margin-left: 0.5rem; }
+
+.modal-desc-box {
+  flex-grow: 1;
+  color: #4b5563;
+  margin-bottom: 2rem;
+}
+
+.desc-title {
+  color: #111827;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.desc-text {
+  white-space: pre-line;
+  line-height: 1.625;
+  font-size: 0.875rem;
+}
+
+.whatsapp-btn {
+  width: 100%;
+  background-color: #25D366;
+  color: white;
+  font-weight: 700;
+  padding: 0.875rem;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s;
+  border: none;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+.whatsapp-btn:hover { background-color: #128C7E; }
+.whatsapp-btn:active { transform: scale(0.98); }
+/* =========================================
+   HERO BUTTON (Extracted Dark Theme Style)
+   ========================================= */
+
+.hero-btn {
+  /* --- 1. Layout & Positioning --- */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content; /* Auto width based on content */
+  
+  /* --- 2. Sizing (From 'REDUCE HERO BUTTON SIZE' section) --- */
+  padding: 0.5rem 1.25rem;
+  gap: 0.35rem;
+  
+  /* --- 3. Visuals (From 'body.dark' section) --- */
+  /* Gradient Background (Brown/Gold to Purple as per your code) */
+  background: linear-gradient(to right, #72500c, #9333ea);
+  
+  /* Blue Border & Glow */
+  border: 1px solid #1d4ed8;
+  box-shadow: 0 10px 20px -5px rgba(37, 99, 235, 0.4);
+  border-radius: 9999px; /* Pill shape */
+
+  /* --- 4. Typography --- */
+  color: #ffffff;
+  font-size: 0.875rem; /* text-sm */
+  font-weight: 700;
+  text-decoration: none;
+  
+  /* --- 5. Interaction --- */
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  position: relative;
+  z-index: 20;
+}
+
+/* --- Hover State --- */
+.hero-btn:hover {
+  /* Turns Solid Deep Blue on Hover */
+  background: #1d4ed8;
+  
+  /* Stronger Blue Glow */
+  box-shadow: 0 0 20px rgba(37, 99, 235, 0.6);
+  
+  /* Slight Zoom */
+  transform: scale(1.05);
+}
+
+/* --- Active/Click State --- */
+.hero-btn:active {
+  transform: scale(0.95);
+  box-shadow: 0 0 10px rgba(37, 99, 235, 0.4);
+}
+
+/* --- Icon Sizing --- */
+.hero-btn svg {
+  width: 1rem;
+  height: 1rem;
+  transition: transform 0.2s ease;
+}
+
+.hero-btn:hover svg {
+  transform: translateX(2px); /* Subtle arrow movement */
+}
+
+
+
+/* =========================================
+   ★ MODAL DARK THEME (Popup Styling)
+   ========================================= */
+
+/* --- 1. Modal Container & Layout --- */
+.modal-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 60rem; /* Wide professional layout */
+  background-color: #111827; /* Dark BG (Gray-900) */
+  border: 1px solid #374151; /* Subtle border */
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); /* Deep shadow */
+  max-height: 90vh;
+  position: relative;
+  animation: fadeInUp 0.3s ease-out;
+}
+
+@media (min-width: 768px) {
+  .modal-container {
+    flex-direction: row;
+  }
+}
+
+/* --- 2. Left Side (Image Area) --- */
+.modal-left {
+  width: 100%;
+  background-color: #ffffff; /* Keep white to show product clearly */
+  padding: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+@media (min-width: 768px) {
+  .modal-left {
+    width: 50%;
+  }
+}
+
+/* --- 3. Right Side (Details Area) --- */
+.modal-right {
+  width: 100%;
+  padding: 2.5rem;
+  background-color: #111827; /* Dark Theme Background */
+  display: flex;
+  flex-direction: column;
+  color: #ffffff; /* Default Text Color */
+  overflow-y: auto;
+}
+
+@media (min-width: 768px) {
+  .modal-right {
+    width: 50%;
+  }
+}
+
+/* --- 4. Modal Typography --- */
+.modal-brand {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #60a5fa; /* Light Blue for Brand */
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 0.5rem;
+}
+
+.modal-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #ffffff; /* Pure White */
+  margin-bottom: 1.5rem;
+  line-height: 1.1;
+}
+
+/* Specifications Text */
+.desc-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #e5e7eb; /* Light Gray */
+  margin-bottom: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.desc-text {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #9ca3af; /* Muted Gray for easy reading */
+  white-space: pre-line;
+}
+
+/* --- 5. Price Box (The Dark Card inside) --- */
+.modal-price-box {
+  background-color: #1f2937; /* Slightly lighter dark (Gray-800) */
+  padding: 1.25rem;
+  border-radius: 0.75rem;
+  border: 1px solid #374151;
+  margin-bottom: 1.5rem;
+}
+
+.price-main {
+  font-size: 2rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0;
+}
+
+.price-sub {
+  font-size: 0.9rem;
+  color: #9ca3af;
+  margin-top: 0.25rem;
+}
+
+.discount-tag {
+  color: #4ade80; /* Bright Green for Discount */
+  font-weight: 700;
+  margin-left: 0.5rem;
+}
+
+/* --- 6. Close Button --- */
+.modal-close-btn {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  padding: 0.5rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  z-index: 50;
+  transition: background-color 0.2s;
+}
+
+.modal-close-btn:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* =========================================
+   ★ WHATSAPP BUTTON (Premium Green Glow)
+   ========================================= */
+
+.whatsapp-btn {
+  /* Layout */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  width: 100%;
+  margin-top: auto; /* Pushes to bottom */
+  
+  /* Sizing */
+  padding: 1rem;
+  border-radius: 0.75rem;
+  
+  /* Colors (WhatsApp Green Gradient) */
+  background: linear-gradient(135deg, #25D366 0%, #128C7E 100%);
+  color: white;
+  
+  /* Typography */
+  font-weight: 700;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  
+  /* Styling */
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  
+  /* Initial Shadow */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 
+              0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+}
+
+.whatsapp-btn:hover {
+  /* Brighter Gradient */
+  background: linear-gradient(135deg, #4ade80 0%, #16a34a 100%);
+  
+  /* Glow Effect */
+  box-shadow: 0 0 20px rgba(37, 211, 102, 0.6), /* Green Glow */
+              0 0 10px rgba(255, 255, 255, 0.2) inset;
+  
+  transform: translateY(-2px);
+}
+
+.whatsapp-btn:active {
+  transform: scale(0.98);
+}
+
+.whatsapp-btn svg {
+  width: 1.25rem;
+  height: 1.25rem;
+  fill: currentColor; /* Matches text color */
+}
+
+
+.nav-arrow::before, .nav-arrow::after,
+.nav-prev::before, .nav-prev::after,
+.nav-next::before, .nav-next::after,
+.modal-arrow::before, .modal-arrow::after {
+  content: "" !important;
+  display: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+
+/* =========================================
+   KEEP NAVIGATION ARROWS ALWAYS VISIBLE
+   ========================================= */
+
+/* 1. Force arrows to be visible and clickable */
+.nav-arrow, 
+.nav-prev, 
+.nav-next,
+.modal-arrow, 
+.modal-arrow-left, 
+.modal-arrow-right {
+  display: flex !important;      /* Ensures they are drawn */
+  opacity: 1 !important;        /* Makes them fully visible */
+  visibility: visible !important; /* Overrides any hidden states */
+  pointer-events: auto !important; /* Ensures you can click them */
+  
+  /* 2. Remove all shadows (Box and Text) */
+  box-shadow: none !important;
+  text-shadow: none !important;
+  filter: none !important;
+}
+
+/* 3. Ensure the icons (< >) are visible inside */
+.nav-arrow::before, .nav-arrow::after,
+.modal-arrow::before, .modal-arrow::after {
+  display: block !important;
+  opacity: 1 !important;
+  content: inherit;             /* Keeps the existing < > characters */
+  text-shadow: none !important; /* Removes shadow from the icons themselves */
+}
+
+/* 4. Fix positioning for Carousel (so they don't hide on hover) */
+.carousel-root .nav-arrow {
+  opacity: 1 !important;
+  background-color: rgba(255, 255, 255, 0.2); /* Slight background so you can see them */
+}
+
+/* --- Optimized Product Image (Universal & PC) --- */
+.hero-product-img {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 58.666%; /* Default for PC */
+  object-fit: contain;
+  object-position: right center;
+  z-index: 5; 
+  opacity: 0.9;
+  padding: 2rem;
+  /* Smooth transition for when resizing the browser window */
+  transition: all 0.4s ease-in-out; 
+}
+
+/* --- MOBILE & SMALL TABLET OVERRIDES (< 768px) --- */
+@media (max-width: 767px) {
+  .hero-product-img {
+    width: 100% !important;     /* Occupy entire width */
+    height: 100% !important;    /* Occupy entire height */
+    object-position: center;    /* Center the phone in the box */
+    padding: 0;                 /* Remove padding to fill the "Entire Box" */
+    opacity: 0.5;               /* Slight transparency so text is readable */
+    object-fit: cover;          /* Forces the image to fill the container */
+    z-index: 0;                 /* Moves it behind the text */
+  }
+
+  /* Adjust the overlay so text is readable over a full-screen image */
+  .slide-overlay {
+    background: linear-gradient(
+      to bottom, 
+      rgba(0,0,0,0.8) 0%, 
+      rgba(0,0,0,0.3) 50%, 
+      rgba(0,0,0,0.8) 100%
+    ) !important;
+  }
+
+  /* Center the text on mobile for a cleaner look */
+  .hero-content {
+    align-items: center;
+    text-align: center;
+    padding: 0 1rem;
+    max-width: 100%;
+  }
+}

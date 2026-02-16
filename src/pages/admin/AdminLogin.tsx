@@ -3,17 +3,18 @@ import { useNavigate } from "react-router-dom";
 import { authService } from "../../services/authService";
 import { supabase } from "../../services/supabase"; 
 import { Lock } from "lucide-react";
-import { useTenant } from "../../context/TenantContext"; // 1. Import Tenant Context
+import { useTenant } from "../../context/TenantContext";
+import "./AdminLogin.css"; // Import the CSS file
 
 export default function AdminLogin() {
-  const { tenant } = useTenant(); // 2. Get Tenant Data
+  const { tenant } = useTenant();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // 3. Define Dynamic Color (Fallback to Blue if loading/missing)
+  // Dynamic Color
   const primaryColor = tenant?.primary_color || "#2563EB"; 
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -22,14 +23,10 @@ export default function AdminLogin() {
     setLoading(true);
 
     try {
-      // 1. Perform standard Login
       const { user } = await authService.login(email, password);
 
       if (!user) throw new Error("Login failed");
 
-      // ---------------------------------------------------------
-      // FIX: Fetch the User's Tenant ID manually
-      // ---------------------------------------------------------
       const { data: userRel, error: relError } = await supabase
         .from('user_tenants') 
         .select('tenant_id')
@@ -41,18 +38,11 @@ export default function AdminLogin() {
       }
 
       const userTenantId = userRel.tenant_id;
-
-      // ---------------------------------------------------------
-      // 2. Domain Security Check (With Localhost Support)
-      // ---------------------------------------------------------
       const currentDomain = window.location.origin;
 
-      // IF LOCALHOST: Skip the strict domain check to allow testing
       if (currentDomain.includes("localhost")) {
         console.warn("⚠️ Localhost detected: Bypassing domain security check.");
-      } 
-      // IF PRODUCTION: Strictly check if this domain belongs to the user
-      else {
+      } else {
         const { data: domainTenant } = await supabase
           .from('tenants')
           .select('tenant_id, name')
@@ -63,14 +53,12 @@ export default function AdminLogin() {
           throw new Error("This domain is not registered in the system.");
         }
 
-        // STRICT CHECK: Does User's Tenant ID match this Domain's Tenant ID?
         if (userTenantId !== domainTenant.tenant_id) {
           await authService.logout(); 
           throw new Error(`You are not authorized to access ${domainTenant.name}.`);
         }
       }
 
-      // 3. Success
       navigate("/admin/dashboard");
 
     } catch (err: any) {
@@ -85,38 +73,38 @@ export default function AdminLogin() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-10 space-y-6">
+    <div className="login-page">
+      <div className="login-card">
         
         {/* Icon Header */}
-        <div className="flex flex-col items-center">
+        <div className="login-header">
           <div 
-            className="h-14 w-14 rounded-full flex items-center justify-center shadow-md transition-colors duration-300"
-            style={{ backgroundColor: primaryColor }} // Dynamic Background
+            className="icon-wrapper"
+            style={{ backgroundColor: primaryColor }}
           >
-            <Lock className="h-6 w-6 text-white" />
+            <Lock className="lock-icon" />
           </div>
-          <h2 className="mt-6 text-2xl font-bold text-gray-900">Admin Portal</h2>
-          <p className="text-sm text-gray-500 mt-1">
-             Login to <span className="font-semibold">{tenant?.name || 'Dashboard'}</span>
+          <h2 className="login-title">Admin Portal</h2>
+          <p className="login-subtitle">
+             Login to <span className="tenant-name">{tenant?.name || 'Dashboard'}</span>
           </p>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleLogin} className="space-y-5">
+        <form onSubmit={handleLogin} className="login-form">
           {error && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-3">
-              <p className="text-red-600 text-sm text-center font-medium">{error}</p>
+            <div className="error-box">
+              <p className="error-text">{error}</p>
             </div>
           )}
 
-          <div className="space-y-4">
+          <div className="input-group">
             <input
               type="email"
               required
               placeholder="Email address"
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 transition"
-              style={{ '--tw-ring-color': primaryColor } as React.CSSProperties} // Dynamic Focus Ring
+              className="login-input"
+              style={{ '--tw-ring-color': primaryColor } as React.CSSProperties}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               disabled={loading}
@@ -125,8 +113,8 @@ export default function AdminLogin() {
               type="password"
               required
               placeholder="Password"
-              className="w-full px-4 py-3 border border-gray-300 rounded-xl text-sm focus:outline-none focus:ring-2 transition"
-              style={{ '--tw-ring-color': primaryColor } as React.CSSProperties} // Dynamic Focus Ring
+              className="login-input"
+              style={{ '--tw-ring-color': primaryColor } as React.CSSProperties}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               disabled={loading}
@@ -136,8 +124,8 @@ export default function AdminLogin() {
           <button
             type="submit"
             disabled={loading}
-            className={`w-full text-white font-semibold py-3 rounded-xl transition shadow-sm flex justify-center items-center hover:opacity-90 hover:shadow-md ${loading ? 'opacity-70 cursor-not-allowed' : ''}`}
-            style={{ backgroundColor: primaryColor }} // Dynamic Background
+            className="login-btn"
+            style={{ backgroundColor: primaryColor }}
           >
             {loading ? "Verifying..." : "Sign In"}
           </button>

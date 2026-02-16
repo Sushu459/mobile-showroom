@@ -1,0 +1,437 @@
+/* Home.css */
+
+/* --- Page Background --- */
+.home-root {
+  min-height: 100vh;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  background-color: var(--bg-body);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.light .home-root {
+  background: linear-gradient(to bottom right, #cbd5e1, #fce7f3, #fed7aa);
+}
+
+body.dark .home-root {
+  background: linear-gradient(to bottom right, #111111, #1a1a1a, #0f0f0f);
+}
+
+.home-container {
+  max-width: 80rem; /* max-w-7xl */
+  margin: 0 auto;
+  padding: 1.5rem 1rem; /* py-6 px-4 */
+}
+
+@media (min-width: 640px) {
+  .home-container { padding-left: 1.5rem; padding-right: 1.5rem; }
+}
+
+@media (min-width: 1024px) {
+  .home-container { padding-left: 2rem; padding-right: 2rem; }
+}
+
+/* --- Shop Header --- */
+.shop-header {
+  text-align: center;
+  margin-bottom: 2rem; /* mb-8 */
+}
+
+.shop-title {
+  font-size: 1.875rem; /* text-3xl */
+  font-weight: 700;
+  transition: color 500ms;
+  margin: 0;
+}
+
+.cursor-blink {
+  margin-left: 0.25rem;
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .5; }
+}
+
+.shop-subtitle {
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+
+/* --- Trust Badges --- */
+.trust-badges-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 3rem; /* mb-12 */
+  background-color: var(--bg-card);
+  border-radius: 0.75rem; /* rounded-xl */
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border-color);
+  padding: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .trust-badges-container {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.trust-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem; /* space-x-4 */
+  padding: 0.5rem;
+  justify-content: center;
+}
+
+@media (min-width: 768px) {
+  .trust-item { justify-content: flex-start; }
+}
+
+.trust-icon-box {
+  padding: 0.75rem;
+  background-color: #eff6ff; /* bg-blue-50 */
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.trust-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  color: #2563eb; /* text-blue-600 */
+}
+
+.trust-text-col {
+  text-align: left;
+}
+
+.trust-title {
+  font-weight: 700;
+  color: #1f2937;
+  font-size: 0.875rem; /* text-sm */
+  margin: 0;
+}
+
+.trust-sub {
+  font-size: 0.75rem; /* text-xs */
+  color: #6b7280;
+  margin: 0;
+}
+
+/* --- Main Layout (Sidebar + Content) --- */
+.home-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem; /* gap-8 */
+  align-items: flex-start;
+  position: relative;
+}
+
+@media (min-width: 1024px) {
+  .home-layout { flex-direction: row; }
+}
+
+.content-area {
+  flex: 1;
+  width: 100%;
+}
+
+/* --- Toolbar --- */
+.toolbar-sticky {
+  position: sticky;
+  top: 4.375rem; /* top-17.5 */
+  z-index: 30;
+  backdrop-filter: blur(12px);
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.toolbar-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background-color: white;
+  padding: 1rem;
+  border-radius: 0.75rem; /* rounded-xl */
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  border: 1px solid #f3f4f6;
+}
+/* --- DARK MODE OVERRIDES FOR TOOLBAR --- */
+
+/* 1. The Main Toolbar Container (The "Total Bar") */
+body.dark .toolbar-card {
+  background-color: #1e293b; /* Dark Slate Grey (Matches your Product Cards) */
+  border: 1px solid #334155; /* Subtle border */
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3); /* Dark shadow for depth */
+}
+
+/* 2. The Sort Dropdown ("Newest First") */
+body.dark .sort-select {
+  background-color: #0f172a; /* Darker grey to stand out from the bar */
+  color: #ffffff;            /* White text */
+  border: 1px solid #334155;
+}
+
+body.dark .sort-icon {
+  color: #cbd5e1; /* Light grey arrow icon */
+}
+
+/* 3. The "5 results" Text */
+body.dark .results-count {
+  color: #94a3b8; /* Muted grey text */
+}
+
+body.dark .results-count span {
+  color: #ffffff; /* White number */
+}
+
+/* 4. Mobile Filter Button (If visible) */
+body.dark .mobile-filter-btn {
+  background-color: #334155;
+  color: #ffffff;
+}
+/* --- DARK MODE TEXT FIXES --- */
+
+/* 1. Fix the Main Shop Title (Typing Animation) */
+body.dark .shop-title {
+  color: #ffffff !important;
+}
+
+/* 2. Fix the Trust Badge Titles (Warranty, Delivery, etc.) */
+body.dark .trust-title {
+  color: #ffffff !important;
+}
+
+/* 3. Fix the Trust Badge Subtitles (Make them readable light grey) */
+body.dark .trust-sub {
+  color: #cbd5e1 !important; /* Light Grey */
+}
+
+/* 4. Update Trust Badge Container to match the Dark Theme */
+body.dark .trust-badges-container {
+  background-color: #1e293b; /* Dark Slate Grey */
+  border: 1px solid #334155;
+}
+
+/* 5. Ensure the Trust Icons have a nice background in dark mode */
+body.dark .trust-icon-box {
+  background-color: #334155; /* Darker circle background */
+}
+
+body.dark .trust-icon {
+  color: #60a5fa; /* Lighter Blue icon */
+}
+
+@media (min-width: 640px) {
+  .toolbar-card {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+/* Left Section */
+.toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex: 1;
+  width: 100%;
+}
+
+.mobile-filter-btn {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 1rem;
+  background-color: #f3f4f6;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.mobile-filter-btn:hover { background-color: #e5e7eb; }
+
+@media (min-width: 1024px) {
+  .mobile-filter-btn { display: none; }
+}
+
+/* Search Bar */
+.search-wrapper {
+  position: relative;
+  flex: 1;
+  max-width: 28rem; /* max-w-md */
+}
+
+.search-icon-pos {
+  position: absolute;
+  left: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1rem;
+  height: 1rem;
+  color: #9ca3af;
+}
+
+.search-input-field {
+  width: 100%;
+  padding-left: 2.5rem; /* pl-10 */
+  padding-right: 1rem;
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+  color: #111827;
+}
+
+body.dark .search-input-field {
+  background-color: #334155;
+  color: #ffffff;
+  border-color: #475569;
+}
+
+.search-input-field:focus {
+  outline: none;
+  background-color: white;
+  box-shadow: 0 0 0 2px #3b82f6;
+  border-color: transparent;
+}
+
+/* Right Section */
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  width: 100%;
+}
+
+@media (min-width: 640px) {
+  .toolbar-right { width: auto; justify-content: flex-end; }
+}
+
+.results-count {
+  font-size: 0.75rem; /* text-xs */
+  font-weight: 500;
+  color: #6b7280;
+  white-space: nowrap;
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .results-count { display: block; }
+}
+
+.sort-wrapper {
+  position: relative;
+  min-width: 9rem; /* min-w-35 */
+}
+
+.sort-select {
+  width: 100%;
+  appearance: none;
+  padding-left: 1rem;
+  padding-right: 2.5rem;
+  padding-top: 0.625rem;
+  padding-bottom: 0.625rem;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #374151;
+  cursor: pointer;
+}
+
+.sort-select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #3b82f6;
+}
+
+.sort-icon {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 1rem;
+  height: 1rem;
+  color: #9ca3af;
+  pointer-events: none;
+}
+
+/* --- Product Grid --- */
+.product-grid-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem; /* gap-6 */
+}
+
+@media (min-width: 640px) {
+  .product-grid-layout { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (min-width: 1024px) {
+  .product-grid-layout { grid-template-columns: repeat(3, 1fr); }
+}
+
+/* --- Empty State --- */
+.empty-state-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5rem 0;
+  background-color: white;
+  border-radius: 0.75rem;
+  border: 2px dashed #e5e7eb;
+}
+
+.empty-icon-circle {
+  padding: 1rem;
+  background-color: #f9fafb;
+  border-radius: 9999px;
+  margin-bottom: 1rem;
+}
+
+.empty-title {
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: #111827;
+  margin: 0;
+}
+
+.empty-desc {
+  color: #6b7280;
+  margin-top: 0.25rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.clear-filters-btn {
+  padding: 0.5rem 1.5rem;
+  background-color: #2563eb;
+  color: white;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 9999px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3);
+}
+
+.clear-filters-btn:hover {
+  background-color: #1d4ed8;
+}

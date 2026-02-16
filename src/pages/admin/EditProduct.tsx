@@ -4,9 +4,9 @@ import type { Product } from "../../types/product";
 import { productService } from "../../services/productService";
 import ProductForm from "../../components/admin/ProductForm";
 import Loader from '../../components/common/Loader';
+import "./EditProduct.css"; // Import the CSS file
 
 export default function EditProduct() {
-
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
@@ -14,7 +14,6 @@ export default function EditProduct() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-
     if (!id) {
       setLoading(false);
       return;
@@ -35,12 +34,11 @@ export default function EditProduct() {
     };
 
     loadProduct();
-
   }, [id]);
 
   if (loading) {
     return (
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="edit-product-container">
         <Loader />
       </div>
     );
@@ -48,35 +46,33 @@ export default function EditProduct() {
 
   if (!product) {
     return (
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="edit-product-container">
         Product not found
       </div>
     );
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="edit-product-container">
 
-      <div className="flex items-center justify-between mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">
+      <div className="edit-header">
+        <h1 className="edit-title">
           Edit Product
         </h1>
 
         <button
           onClick={() => navigate("/admin/dashboard")}
-          className="text-sm font-medium text-blue-600 hover:text-blue-800"
+          className="back-link"
         >
           ← Back to Dashboard
         </button>
       </div>
 
-      <div className="bg-white shadow rounded-lg p-6">
-
+      <div className="edit-form-wrapper">
         <ProductForm
           initialData={product}
           onSuccess={() => navigate("/admin/dashboard")}
         />
-
       </div>
 
     </div>

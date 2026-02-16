@@ -1,0 +1,547 @@
+/* ManageProducts.css */
+
+/* --- Layout --- */
+.manage-page {
+  min-height: 100vh;
+  background-color: var(--bg-body);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  padding: 3rem 1rem; /* py-12 px-4 */
+}
+
+body.light .manage-page {
+  background: linear-gradient(to bottom right, #f8fafc, #ffffff, #f1f5f9);
+}
+
+body.dark .manage-page {
+  background: linear-gradient(to bottom right, #111111, #1a1a1a, #0f0f0f);
+}
+
+@media (min-width: 640px) {
+  .manage-page { padding-left: 1.5rem; padding-right: 1.5rem; }
+}
+
+@media (min-width: 1024px) {
+  .manage-page { padding-left: 2rem; padding-right: 2rem; }
+}
+
+.manage-container {
+  max-width: 80rem; /* max-w-7xl */
+  margin: 0 auto;
+}
+
+/* --- Loader --- */
+.loader-wrapper {
+  min-height: 100vh;
+  background-color: var(--bg-body);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+body.light .loader-wrapper {
+  background: linear-gradient(to bottom right, #f8fafc, #ffffff, #f1f5f9);
+}
+
+body.dark .loader-wrapper {
+  background: linear-gradient(to bottom right, #111111, #1a1a1a, #0f0f0f);
+}
+
+.loader-content {
+  text-align: center;
+}
+
+.spinner {
+  height: 3rem; /* h-12 */
+  width: 3rem; /* w-12 */
+  border-radius: 9999px;
+  border-bottom: 2px solid #2563eb; /* border-blue-600 */
+  margin: 0 auto 1rem;
+  animation: spin 1s linear infinite;
+}
+
+.loading-text {
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* --- Header --- */
+.manage-header {
+  margin-bottom: 2rem; /* mb-8 */
+  text-align: center;
+}
+
+.page-title {
+  font-size: 2.25rem; /* text-4xl */
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 0.5rem;
+}
+
+.page-subtitle {
+  font-size: 1.125rem; /* text-lg */
+  color: var(--text-muted);
+}
+
+.shop-highlight {
+  font-weight: 600;
+  color: #2563eb; /* text-blue-600 */
+}
+
+/* --- Toolbar (Search & Add) --- */
+.toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-bottom: 1.5rem; /* mb-6 */
+  align-items: center;
+  justify-content: space-between;
+}
+
+@media (min-width: 768px) {
+  .toolbar { flex-direction: row; }
+}
+
+.search-box-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+@media (min-width: 768px) {
+  .search-box-wrapper { width: 24rem; /* w-96 */ }
+}
+
+.search-icon-wrapper {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  padding-left: 0.75rem; /* pl-3 */
+  display: flex;
+  align-items: center;
+  pointer-events: none;
+}
+
+.search-icon {
+  height: 1.25rem; /* h-5 */
+  width: 1.25rem; /* w-5 */
+  color: #9ca3af; /* text-gray-400 */
+}
+
+.search-input {
+  display: block;
+  width: 100%;
+  padding-left: 2.5rem; /* pl-10 */
+  padding-right: 0.75rem; /* pr-3 */
+  padding-top: 0.75rem; /* py-3 */
+  padding-bottom: 0.75rem;
+  border: 1px solid #e5e7eb; /* border-gray-200 */
+  border-radius: 0.75rem; /* rounded-xl */
+  background-color: white;
+  color: #111827;
+  transition: all 0.15s ease-in-out;
+}
+
+body.dark .search-input {
+  background-color: #334155;
+  color: #ffffff;
+  border-color: #475569;
+}
+
+.search-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px #3b82f6; /* ring-blue-500 */
+  border-color: transparent;
+}
+
+.add-btn {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: #2563eb; /* bg-blue-600 */
+  color: white;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem; /* py-3 px-6 */
+  border-radius: 0.75rem; /* rounded-xl */
+  transition: all 0.2s;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border: none;
+  cursor: pointer;
+}
+
+@media (min-width: 768px) {
+  .add-btn { width: auto; }
+}
+
+.add-btn:hover {
+  background-color: #1d4ed8; /* hover:bg-blue-700 */
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* --- Empty State --- */
+.empty-state {
+  background-color: white;
+  border-radius: 0.75rem; /* rounded-xl */
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  padding: 3rem; /* p-12 */
+  text-align: center;
+  border: 1px solid #f3f4f6; /* border-gray-100 */
+}
+
+.empty-title {
+  color: #4b5563; /* text-gray-600 */
+  font-size: 1.125rem; /* text-lg */
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.empty-subtitle {
+  color: #6b7280; /* text-gray-500 */
+  margin-bottom: 1.5rem;
+}
+
+/* --- Table Container --- */
+.table-card {
+  background-color: white;
+  border-radius: 1rem; /* rounded-2xl */
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); /* shadow-xl */
+  overflow: hidden;
+  border: 1px solid #f3f4f6;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.products-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table-head-row {
+  background-color: #4b5563; /* bg-gray-600 */
+}
+
+.table-th {
+  padding: 1rem 1.5rem; /* px-6 py-4 */
+  text-align: left;
+  font-size: 0.75rem; /* text-xs */
+  font-weight: 700;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.05em; /* tracking-wider */
+}
+
+.table-tbody {
+  background-color: white;
+}
+
+.table-tr {
+  transition: background-color 0.2s;
+  border-bottom: 1px solid #f3f4f6; /* divide-gray-100 */
+}
+
+.table-tr:hover {
+  background-color: #eff6ff; /* hover:bg-blue-50 */
+}
+
+.table-tr.even { background-color: white; }
+.table-tr.odd { background-color: #f9fafb; /* bg-gray-50 */ }
+
+.table-td {
+  padding: 1rem 1.5rem; /* px-6 py-4 */
+  vertical-align: middle;
+}
+
+/* Cell Content Styles */
+.product-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.product-thumb {
+  height: 3rem; /* h-12 */
+  width: 3rem; /* w-12 */
+  border-radius: 0.5rem; /* rounded-lg */
+  object-fit: cover;
+  border: 1px solid #e5e7eb;
+}
+
+.product-name-text {
+  font-size: 0.875rem; /* text-sm */
+  font-weight: 600;
+  color: #111827; /* text-gray-900 */
+}
+
+.brand-text {
+  font-size: 0.875rem;
+  color: #4b5563; /* text-gray-600 */
+  font-weight: 500;
+}
+
+.price-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.price-main {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+body.dark .price-main {
+  color: #ffffff;
+}
+
+.discount-sub {
+  font-size: 0.75rem; /* text-xs */
+  color: #16a34a; /* text-green-600 */
+  font-weight: 500;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.75rem; /* text-xs */
+  font-weight: 700;
+}
+
+.status-active {
+  background-color: #dcfce7; /* bg-green-100 */
+  color: #15803d; /* text-green-700 */
+}
+
+.status-hidden {
+  background-color: #fee2e2; /* bg-red-100 */
+  color: #b91c1c; /* text-red-700 */
+}
+
+.category-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem; /* text-sm */
+  font-weight: 500;
+  background-color: #eff6ff; /* bg-blue-50 */
+  color: #1d4ed8; /* text-blue-700 */
+  border: 1px solid #bfdbfe; /* border-blue-200 */
+}
+
+.actions-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 0.875rem; /* text-sm */
+  transition: all 0.2s;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border: none;
+  cursor: pointer;
+  color: white;
+}
+
+.btn-edit {
+  background-color: #3b82f6; /* bg-blue-500 */
+}
+
+.btn-edit:hover { background-color: #1d4ed8; }
+
+.btn-delete {
+  background-color: #f87171; /* bg-red-400 */
+}
+
+.btn-delete:hover { background-color: #b91c1c; }
+
+/* --- Pagination --- */
+.pagination-footer {
+  background-color: white;
+  border-top: 1px solid #e5e7eb;
+  padding: 1rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .pagination-footer { flex-direction: row; }
+}
+
+.pagination-info {
+  font-size: 0.875rem; /* text-sm */
+  color: #374151; /* text-gray-700 */
+}
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.page-arrow-btn {
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  background: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.page-arrow-btn:hover:not(:disabled) {
+  background-color: #f9fafb;
+}
+
+.page-arrow-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.page-numbers {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.page-num-btn {
+  width: 2rem; /* w-8 */
+  height: 2rem; /* h-8 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.5rem;
+  font-size: 0.875rem; /* text-sm */
+  font-weight: 500;
+  transition: all 0.2s;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.page-num-btn.active {
+  background-color: #2563eb; /* bg-blue-600 */
+  color: white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.page-num-btn.inactive {
+  background-color: white;
+  color: #4b5563; /* text-gray-600 */
+  border-color: #d1d5db;
+}
+
+.page-num-btn.inactive:hover {
+  background-color: #f9fafb;
+}
+
+/* --- DARK MODE OVERRIDES --- */
+
+/* 1. Main Table Container */
+body.dark .table-card {
+  background-color: #1e293b !important; /* Dark Slate Grey */
+  border-color: #334155;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+}
+
+/* 2. Table Rows & Alternating Colors */
+body.dark .table-tr {
+  border-bottom-color: #334155;
+}
+
+body.dark .table-tr.odd {
+  background-color: #1e293b !important;
+}
+
+body.dark .table-tr.even {
+  background-color: #1a2233 !important; /* Slightly darker row */
+}
+
+body.dark .table-tr:hover {
+  background-color: #334155 !important; /* Lighter grey on hover */
+}
+
+/* 3. Text Visibility */
+body.dark .product-name-text,
+body.dark .brand-text,
+body.dark .pagination-info {
+  color: #ffffff !important; /* Force White Text */
+}
+
+/* 4. Product Image Visibility */
+body.dark .product-thumb {
+  background-color: #ffffff !important; /* White background behind images */
+  border-color: #475569;
+  padding: 2px;
+}
+
+/* 5. Pagination Footer */
+body.dark .pagination-footer {
+  background-color: #1e293b !important;
+  border-top-color: #334155;
+}
+
+body.dark .page-arrow-btn,
+body.dark .page-num-btn.inactive {
+  background-color: #334155;
+  border-color: #475569;
+  color: #ffffff;
+}
+
+body.dark .page-arrow-btn:hover:not(:disabled),
+body.dark .page-num-btn.inactive:hover {
+  background-color: #475569;
+}
+
+/* 6. Status & Category Badges in Dark Mode */
+body.dark .category-badge {
+  background-color: #2d3748; /* Darker blue/grey */
+  color: #60a5fa;            /* Bright blue text */
+  border-color: #3b82f6;
+}
+
+body.dark .status-active {
+  background-color: rgba(22, 163, 74, 0.2); /* Transparent Green */
+  color: #4ade80;
+}
+
+body.dark .status-hidden {
+  background-color: rgba(220, 38, 38, 0.2); /* Transparent Red */
+  color: #f87171;
+}
+
+/* --- DARK MODE PAGINATION FIX --- */
+
+/* Targets the "Showing 1 to 6..." text */
+body.dark .pagination-info {
+  color: #ffffff !important; /* Base text in white for contrast */
+}
+
+/* Specifically forces the numbers (1, 6, 6) to be blue */
+body.dark .pagination-info span,
+body.dark .pagination-info b,
+body.dark .pagination-info strong {
+  color: #3b82f6 !important; /* Vibrant Blue for numbers */
+  font-weight: 700;
+}
+
+/* If you want the "Showing" and "results" text to be blue as well */
+body.dark .pagination-info {
+  color: #3b82f6 !important;
+}

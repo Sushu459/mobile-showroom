@@ -69,3 +69,27 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+:root {
+  /* Default Fallbacks */
+  --bg-body: #ffffff;
+  --text-main: #000000;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text-main);
+  background-color: var(--bg-body); /* Set the base color */
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Special override: If theme is "light", use your specific gradient.
+   If theme is "dark", the variable --bg-body (#000000) handles it.
+*/
+body.light {
+  background: linear-gradient(to bottom right, #cbd5e1, #fce7f3, #fed7aa);
+}
+
+body.dark {
+  background: linear-gradient(to bottom right, #111111, #1a1a1a, #0f0f0f);
+}

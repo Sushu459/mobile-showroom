@@ -1,0 +1,213 @@
+/* AddProduct.css */
+
+/* --- Layout Container --- */
+/* This is the outer wrapper. It is transparent to prevent the "double card" look. */
+.add-product-container {
+  max-width: 56rem; /* max-w-4xl */
+  margin: 0 auto;
+  padding: 2rem 1rem; /* py-8 px-4 */
+}
+
+@media (min-width: 640px) {
+  .add-product-container {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+}
+
+/* --- Header Section --- */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2rem;
+}
+
+.page-title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.back-btn {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #3b82f6; /* Consistent blue */
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.2s;
+  text-decoration: none;
+}
+
+.back-btn:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+/* --- Form Wrapper (The Single Primary Card) --- */
+.form-wrapper {
+  background-color: white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  border-radius: 0.75rem; /* rounded-xl */
+  padding: 2rem;
+  border: 1px solid #e5e7eb;
+}
+
+/* --- Form Elements --- */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 0.5rem;
+}
+
+.form-input,
+.form-select,
+.form-textarea {
+  width: 100%;
+  padding: 0.75rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  transition: all 0.2s;
+}
+
+/* --- DARK MODE OVERRIDES --- */
+
+/* 1. Page Background Fix */
+body.dark .add-product-container {
+  background-color: transparent !important;
+}
+
+/* 2. The Main Grey Card */
+body.dark .form-wrapper {
+  background-color: #1e293b !important; /* Slate Grey Card */
+  border: 1px solid #334155 !important;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* 3. Deep Grey Input Fields */
+body.dark .form-input,
+body.dark .form-select,
+body.dark .form-textarea {
+  background-color: #0f172a !important; /* Deep Navy/Grey fields */
+  color: #ffffff !important;
+  border: 1px solid #334155 !important;
+}
+
+/* 4. Text & Label Visibility */
+body.dark .page-title,
+body.dark .form-label {
+  color: #ffffff !important;
+}
+
+body.dark .back-btn {
+  color: #60a5fa; /* Lighter blue for dark theme visibility */
+}
+
+/* 5. Placeholder & Focus States */
+body.dark .form-input::placeholder,
+body.dark .form-textarea::placeholder {
+  color: #64748b !important;
+}
+
+body.dark .form-input:focus,
+body.dark .form-select:focus,
+body.dark .form-textarea:focus {
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+  outline: none;
+}
+
+
+/* src/components/products/ProductCard.css */
+
+/* --- DARK MODE MODAL TEXT OVERRIDES --- */
+
+/* 1. Force the Main Product Name (e.g., "Moto") to White */
+body.dark .modal-title {
+  color: #ffffff !important;
+}
+
+/* 2. Style the "Specifications" heading */
+body.dark .specs-title {
+  color: #ffffff !important;
+  opacity: 0.9;
+}
+
+/* 3. Fix the Specification Labels (e.g., "Brand", "Operating System") */
+body.dark .specs-label,
+body.dark .spec-label {
+  color: #cbd5e1 !important; /* Light slate grey for labels */
+  font-weight: 600;
+}
+
+/* 4. Fix the Specification Values (e.g., "Motorola", "Android") */
+body.dark .specs-text,
+body.dark .spec-value {
+  color: #ffffff !important; /* Pure white for values */
+}
+
+/* 5. Warranty Information text */
+body.dark .warranty-row {
+  color: #94a3b8 !important; /* Muted light grey */
+}
+
+/* 6. Price Box labels */
+body.dark .price-label {
+  color: #cbd5e1 !important;
+}
+
+
+/* AddProduct.css */
+
+/* Since we removed the wrapper, we apply padding to the 
+   page body or a minimal layout utility if needed.
+*/
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  /* Ensure header aligns with the form width */
+  max-width: 800px; 
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0 1rem;
+}
+
+.page-title {
+  font-size: 1.875rem;
+  font-weight: 700;
+  color: var(--text-main, #ffffff);
+  margin: 0;
+}
+
+.back-btn {
+  color: var(--text-muted, #94a3b8);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: color 0.2s;
+}
+
+.back-btn:hover {
+  color: var(--accent-color, #3b82f6);
+}
+
+/* If your ProductForm doesn't have a max-width, 
+   you might want to add one here to keep it centered.
+*/
+form {
+  max-width: 800px;
+  margin: 0 auto;
+}

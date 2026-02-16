@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import type { Product } from "../../types/product";
 import { productService } from "../../services/productService";
-import { ArrowLeft,  MessageCircle } from "lucide-react";
+import { ArrowLeft, MessageCircle } from "lucide-react";
+import "./ProductDetail.css"; // Import the CSS file
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -37,7 +38,7 @@ export default function ProductDetail() {
     const fallbackToWhatsAppUrl = () => {
       const messageWithImageLink = `${messageText}\n\nImage: ${product.image_url}`;
       const encodedMessage = encodeURIComponent(messageWithImageLink);
-      const whatsappNumber = "8978951842"; // Note: Usually you don't target a specific number for general sharing, but I kept it per your code.
+      const whatsappNumber = "8978951842"; 
       const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
       window.open(whatsappUrl, "_blank");
     };
@@ -47,7 +48,6 @@ export default function ProductDetail() {
       if (navigator.share && navigator.canShare) {
         
         // 2. Fetch the image to create a "File" object
-        // Note: Your image server (Supabase) must allow CORS for this to work
         const response = await fetch(product.image_url);
         const blob = await response.blob();
         const file = new File([blob], "product_image.jpg", { type: blob.type });
@@ -68,34 +68,29 @@ export default function ProductDetail() {
       }
     } catch (error) {
       console.error("Error sharing:", error);
-      // If the user cancels the share or an error occurs, you might want to fallback or just do nothing
-      // fallbackToWhatsAppUrl(); // Optional: Uncomment if you want to force the link on error
     }
   };
 
   if (loading) {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-10">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 font-medium">Loading product...</p>
-        </div>
+      <div className="status-container">
+        <div className="spinner"></div>
+        <p className="status-text">Loading product...</p>
       </div>
     );
   }
 
   if (!product) {
     return (
-      <div className="max-w-4xl mx-auto px-4 py-10">
-        <div className="text-center">
-          <p className="text-gray-600 mb-4 text-lg">Product not found</p>
-          <button
-            onClick={() => navigate("/")}
-            className="text-blue-600 hover:text-blue-800 font-medium"
-          >
-            ← Back to Shop
-          </button>
-        </div>
+      <div className="status-container">
+        <p className="status-text">Product not found</p>
+        <button
+          onClick={() => navigate("/")}
+          className="back-btn"
+          style={{ justifyContent: 'center', width: '100%' }}
+        >
+          ← Back to Shop
+        </button>
       </div>
     );
   }
@@ -104,67 +99,68 @@ export default function ProductDetail() {
   const savings = product.price - discountedPrice;
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-50 via-white to-slate-100 py-8 px-4">
-      <div className="max-w-5xl mx-auto">
+    <div className="detail-page">
+      <div className="detail-container">
         {/* Back Button */}
         <button
           onClick={() => navigate("/")}
-          className="flex items-center gap-2 text-blue-600 hover:text-blue-800 font-semibold mb-8 transition duration-200"
+          className="back-btn"
         >
           <ArrowLeft className="h-5 w-5" />
           Back to Shop
         </button>
 
         {/* Main Product Content */}
-        <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
+        <div className="product-card-wrapper">
+          <div className="product-content-grid">
+            
             {/* Product Image */}
-            <div className="flex items-center justify-center bg-linear-to-br from-gray-50 to-gray-100 rounded-xl p-6">
-              <div className="relative">
+            <div className="image-section">
+              <div className="image-wrapper">
                 <img
                   src={product.image_url}
                   alt={product.name}
-                  className="h-72 w-72 object-contain rounded-lg shadow-lg bg-white p-4"
+                  className="product-image"
                 />
                 {product.discount > 0 && (
-                  <div className="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow">
+                  <div className="discount-badge">
                     {product.discount}% OFF
                   </div>
                 )}
               </div>
             </div>
 
-            {/* Product Details + Specifications (combined right column) */}
-            <div className="flex flex-col justify-between">
+            {/* Product Details + Specifications */}
+            <div className="details-column">
               {/* Header Info */}
               <div>
-                <div className="flex items-center gap-3 mb-4">
-                  <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-semibold bg-blue-100 text-blue-700 border border-blue-300">
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <span className="category-badge">
                     {product.category}
                   </span>
                 </div>
 
-                <h1 className="text-4xl font-bold text-gray-900 mb-2">
+                <h1 className="product-title">
                   {product.name}
                 </h1>
 
-                <p className="text-xl text-gray-600 mb-6">
-                  Brand: <span className="font-semibold text-gray-900">{product.brand}</span>
+                <p className="brand-text">
+                  Brand: <span className="brand-highlight">{product.brand}</span>
                 </p>
 
                 {/* Price Section */}
-                <div className="bg-linear-to-r from-blue-50 to-blue-100 rounded-xl p-6 mb-6 border border-blue-200">
-                  <p className="text-sm text-gray-600 mb-2">Current Price</p>
-                  <div className="flex items-baseline gap-4">
-                    <span className="text-4xl font-bold text-blue-600">
+                <div className="price-section">
+                  <p className="price-label">Current Price</p>
+                  <div className="price-row">
+                    <span className="price-main">
                       ₹{discountedPrice.toLocaleString()}
                     </span>
                     {product.discount > 0 && (
                       <div>
-                        <p className="text-lg text-gray-500 line-through">
+                        <p className="price-old">
                           ₹{product.price.toLocaleString()}
                         </p>
-                        <p className="text-sm font-semibold text-green-600 mt-1">
+                        <p className="price-savings">
                           Save ₹{savings.toLocaleString()}
                         </p>
                       </div>
@@ -173,54 +169,53 @@ export default function ProductDetail() {
                 </div>
 
                 {/* Compact Product Info Row */}
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
-                    <p className="text-xs text-gray-500">Original</p>
-                    <p className="text-base font-semibold text-gray-900">₹{product.price.toLocaleString()}</p>
+                <div className="info-grid">
+                  <div className="info-card">
+                    <p className="info-label">Original</p>
+                    <p className="info-value">₹{product.price.toLocaleString()}</p>
                   </div>
-                  <div className="bg-gray-50 rounded-lg p-3 border border-gray-200">
-                    <p className="text-xs text-gray-500">Discount</p>
-                    <p className="text-base font-semibold text-orange-600">{product.discount}%</p>
+                  <div className="info-card">
+                    <p className="info-label">Discount</p>
+                    <p className="info-value text-orange">{product.discount}%</p>
                   </div>
                 </div>
 
-                {/* Specifications moved beside image (in same right column) */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
-                  <div className="border-l-4 border-blue-600 pl-3 bg-white/60 rounded-md p-2">
-                    <h3 className="text-xs font-semibold text-gray-600 uppercase">Product</h3>
-                    <p className="text-sm font-bold text-gray-900 mt-1">{product.name}</p>
+                {/* Specifications moved beside image */}
+                <div className="specs-list">
+                  <div className="spec-item">
+                    <h3 className="spec-label">Product</h3>
+                    <p className="spec-value">{product.name}</p>
                   </div>
-                  <div className="border-l-4 border-blue-600 pl-3 bg-white/60 rounded-md p-2">
-                    <h3 className="text-xs font-semibold text-gray-600 uppercase">Brand</h3>
-                    <p className="text-sm font-bold text-gray-900 mt-1">{product.brand}</p>
+                  <div className="spec-item">
+                    <h3 className="spec-label">Brand</h3>
+                    <p className="spec-value">{product.brand}</p>
                   </div>
-                  <div className="border-l-4 border-blue-600 pl-3 bg-white/60 rounded-md p-2">
-                    <h3 className="text-xs font-semibold text-gray-600 uppercase">Category</h3>
-                    <p className="text-sm font-bold text-gray-900 mt-1">{product.category}</p>
+                  <div className="spec-item">
+                    <h3 className="spec-label">Category</h3>
+                    <p className="spec-value">{product.category}</p>
                   </div>
-                  <div className="border-l-4 border-blue-600 pl-3 bg-white/60 rounded-md p-2">
-                    <h3 className="text-xs font-semibold text-gray-600 uppercase">Price</h3>
-                    <p className="text-sm font-bold text-blue-600 mt-1">₹{discountedPrice.toLocaleString()}</p>
+                  <div className="spec-item">
+                    <h3 className="spec-label">Price</h3>
+                    <p className="spec-value text-blue">₹{discountedPrice.toLocaleString()}</p>
                   </div>
                 </div>
               </div>
 
-              {/* Compact single share icon (opens WhatsApp with image and details) */}
-              <div className="flex items-center justify-start mt-4">
+              {/* Compact single share icon */}
+              <div className="share-section">
                 <button
                   onClick={handleShareWhatsApp}
                   aria-label="Share on WhatsApp"
-                  className="inline-flex items-center justify-center h-12 w-12 rounded-full bg-green-500 hover:bg-green-600 text-white shadow-lg transition duration-200"
+                  className="share-btn-wa"
                 >
                   <MessageCircle className="h-6 w-6" />
                 </button>
-                <span className="ml-3 text-sm font-medium text-gray-700">Share</span>
+                <span className="share-label">Share</span>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Removed separate specifications block — specs are now in right column */}
       </div>
     </div>
   );

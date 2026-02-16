@@ -1,0 +1,115 @@
+/* ProductTable.css */
+
+/* Main Container */
+.table-wrapper {
+  background-color: var(--bg-card);
+  border-radius: 1rem;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+  border: 1px solid var(--border-color);
+  overflow: hidden;
+}
+
+.table-header {
+  padding: 1rem 1.5rem;      /* px-6 py-4 */
+  border-bottom: 1px solid var(--border-color);
+}
+
+.table-title {
+  font-size: 1.125rem;       /* text-lg */
+  font-weight: 600;
+  color: var(--text-main);
+  margin: 0;
+}
+
+/* Table Elements */
+.styled-table {
+  width: 100%;
+  font-size: 0.875rem;       /* text-sm */
+  text-align: left;
+  border-collapse: collapse;
+}
+
+.table-head {
+  background-color: var(--bg-body);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-size: 0.75rem;        /* text-xs */
+  letter-spacing: 0.05em;    /* tracking-wider */
+}
+
+.th-cell {
+  padding: 1rem 1.5rem;      /* px-6 py-4 */
+}
+
+.text-right {
+  text-align: right;
+}
+
+.tbody-divider {
+  border-top: 1px solid var(--border-color); /* divide-y */
+}
+
+.table-row {
+  transition: background-color 0.2s;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.table-row:hover {
+  background-color: rgba(96, 165, 250, 0.05); /* hover with primary color tint */
+}
+
+/* Table Cells */
+.td-product {
+  padding: 1rem 1.5rem;      /* px-6 py-4 */
+  display: flex;
+  align-items: center;
+  gap: 1rem;                 /* gap-4 */
+}
+
+.td-regular {
+  padding: 1rem 1.5rem;      /* px-6 py-4 */
+  color: var(--text-muted);
+}
+
+.td-price {
+  padding: 1rem 1.5rem;
+  font-weight: 500;
+  color: var(--text-main);
+}
+
+.td-action {
+  padding: 1rem 1.5rem;
+  text-align: right;
+}
+
+/* Inner Content */
+.product-img {
+  width: 3rem;               /* w-12 */
+  height: 3rem;              /* h-12 */
+  border-radius: 0.5rem;     /* rounded-lg */
+  object-fit: cover;
+}
+
+.product-name {
+  font-weight: 500;
+  color: var(--text-main);
+  margin: 0;
+}
+
+.product-brand {
+  font-size: 0.75rem;        /* text-xs */
+  color: #6b7280;            /* text-gray-500 */
+  margin: 0;
+}
+
+.delete-btn {
+  color: #ef4444;            /* text-red-500 */
+  transition: color 0.2s;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  color: #b91c1c;            /* hover:text-red-700 */
+}

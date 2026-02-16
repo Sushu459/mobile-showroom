@@ -1,0 +1,104 @@
+/* Dashboard.css */
+
+/* --- Layout --- */
+.dashboard-container {
+  max-width: 90rem; /* max-w-7xl */
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem; /* py-10 px-6 */
+}
+
+.dashboard-title {
+  font-size: 1.875rem; /* text-3xl */
+  font-weight: 700;
+  color: var(--text-main, #111827); /* Added fallback color */
+  margin-bottom: 2.5rem; /* mb-10 */
+  margin-top: 0;
+  text-align: center; /* Center the title to match the centered cards */
+}
+
+/* --- Grid / Flex Container --- */
+.dashboard-grid {
+  display: flex;             /* Changed from grid to flex */
+  flex-wrap: wrap;           /* Allows cards to wrap on mobile */
+  justify-content: center;   /* Centers the cards horizontally */
+  gap: 2.5rem;                 /* gap-8 */
+}
+
+/* --- Action Cards --- */
+.action-card {
+  cursor: pointer;
+  border-radius: 1rem; /* rounded-2xl */
+  border: 1px solid var(--border-color, #e5e7eb);
+  
+  /* Background fallback */
+  background: var(--bg-card, #ffffff);
+  
+  padding: 2rem; /* p-8 */
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); /* shadow-sm */
+  transition: all 0.3s ease-in-out;
+
+  /* Sizing Controls */
+  width: 100%;               /* Full width on mobile */
+  max-width: 380px;          /* Prevents stretching too wide */
+  flex: 1 1 300px;           /* Responsive flex grow/shrink */
+  
+  /* Flex layout for internal card content */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+body.light .action-card {
+  background: linear-gradient(to bottom right, #ffffff, #f9fafb);
+  border-color: #e5e7eb;
+}
+
+body.dark .action-card {
+  background: linear-gradient(to bottom right, #1e293b, #0f172a);
+  border-color: var(--border-color, #334155);
+}
+
+.action-card:hover {
+  transform: translateY(-0.25rem); /* hover:-translate-y-1 */
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); /* hover:shadow-xl */
+}
+
+/* --- Icon Boxes --- */
+.icon-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 3.5rem; /* h-14 */
+  width: 3.5rem; /* w-14 */
+  border-radius: 0.75rem; /* rounded-xl */
+  margin-bottom: 1.5rem; /* mb-6 */
+}
+
+.icon-box.green { background-color: #dcfce7; } /* bg-green-100 */
+.icon-box.blue  { background-color: #dbeafe; } /* bg-blue-100 */
+.icon-box.red   { background-color: #fee2e2; } /* bg-red-100 */
+
+.action-icon {
+  height: 1.75rem; /* h-7 */
+  width: 1.75rem; /* w-7 */
+}
+
+.action-icon.green { color: #16a34a; } /* text-green-600 */
+.action-icon.blue  { color: #2563eb; } /* text-blue-600 */
+.action-icon.red   { color: #dc2626; } /* text-red-600 */
+
+/* --- Card Content --- */
+.card-title {
+  font-size: 1.25rem; /* text-xl */
+  font-weight: 600;
+  color: var(--text-main, #111827);
+  margin-bottom: 0.5rem; /* mb-2 */
+  margin-top: 0;
+}
+
+.card-desc {
+  font-size: 0.875rem; /* text-sm */
+  color: var(--text-muted, #6b7280);
+  margin: 0;
+  line-height: 1.5;
+}

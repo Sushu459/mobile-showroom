@@ -9,6 +9,10 @@ export interface Tenant {
   mobile_number: string;
   primary_color: string;
   secondary_color: string;
+  theme?: string;
+  theme_mode?: string;
+  theme_type?: string;
+  is_dark?: boolean;
 }
 
 interface TenantContextType {

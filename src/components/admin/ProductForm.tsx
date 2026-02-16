@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { CATEGORIES } from "../../utils/constants";
 import { productService } from "../../services/productService";
-import { Loader2, X, Plus } from "lucide-react";
+import { Loader2, X, Plus, UploadCloud } from "lucide-react";
 import type { Product } from "../../types/product";
-import { useTenant } from "../../context/TenantContext"; // Import Tenant Context
+import { useTenant } from "../../context/TenantContext";
+import "./ProductForm.css";
 
 interface FormInputs {
   name: string;
@@ -22,7 +23,9 @@ interface ProductFormProps {
 }
 
 export default function ProductForm({ onSuccess, initialData }: ProductFormProps) {
-  const { tenant, loading: tenantLoading } = useTenant(); // Get Tenant Context
+  const { tenant, loading: tenantLoading } = useTenant();
+  const [isDragging, setIsDragging] = useState(false);
+  
   const {
     register,
     handleSubmit,
@@ -37,24 +40,18 @@ export default function ProductForm({ onSuccess, initialData }: ProductFormProps
     }
   });
 
-  // State for multiple images
-  const [newImages, setNewImages] = useState<File[]>([]); // New files to upload
-  const [existingImages, setExistingImages] = useState<string[]>([]); // URLs from DB
-
+  const [newImages, setNewImages] = useState<File[]>([]);
+  const [existingImages, setExistingImages] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const isEditMode = Boolean(initialData);
 
-  // Watch values for calculations
   const price = watch("price") || 0;
   const discount = watch("discount") || 0;
   const inStock = watch("in_stock");
-  
   const finalPrice = price - (price * discount) / 100;
 
-  // Initialize Form Data
   useEffect(() => {
     if (!initialData) return;
-
     reset({
       name: initialData.name,
       brand: initialData.brand,
@@ -65,63 +62,44 @@ export default function ProductForm({ onSuccess, initialData }: ProductFormProps
       in_stock: initialData.in_stock !== undefined ? initialData.in_stock : true,
     });
 
-    // Handle Image Migration (Array vs Single String)
     if (initialData.image_urls && initialData.image_urls.length > 0) {
       setExistingImages(initialData.image_urls);
     } else if ((initialData as any).image_url) {
       setExistingImages([(initialData as any).image_url]);
     }
-    
     setNewImages([]);
   }, [initialData, reset]);
 
-  const onSubmit = async (data: FormInputs) => {
-    if (!tenant) {
-      alert("Error: No shop context found. Cannot add product.");
-      return;
-    }
-
-    try {
-      setLoading(true);
-      
-      // Prepare payload matching the Service logic
-      const payload = {
-        ...data,
-        images: newImages,              // Array of new Files
-        existingImages: existingImages, // Array of kept URLs
-        in_stock: data.in_stock,
-      };
-
-      if (isEditMode && initialData) {
-        // Update: ID + Payload
-        await productService.updateProduct(initialData.id, payload);
-      } else {
-        // Create: Payload + TenantID
-        await productService.addProduct(payload, tenant.tenant_id);
-      }
-
-      // Cleanup
-      reset();
-      setNewImages([]);
-      setExistingImages([]);
-      
-      // Trigger refresh in parent
-      await onSuccess();
-      
-    } catch (error) {
-      console.error(error);
-      alert(isEditMode ? "Failed to update product" : "Failed to add product");
-    } finally {
-      setLoading(false);
+  // --- Image Processing Logic ---
+  const processFiles = (files: FileList | null) => {
+    if (files && files.length > 0) {
+      const filesArray = Array.from(files);
+      const validImages = filesArray.filter(file => file.type.startsWith('image/'));
+      setNewImages((prev) => [...prev, ...validImages]);
     }
   };
 
-  // --- Handlers ---
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const filesArray = Array.from(e.target.files);
-      setNewImages((prev) => [...prev, ...filesArray]);
-    }
+    processFiles(e.target.files);
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+    processFiles(e.dataTransfer.files);
   };
 
   const removeNewImage = (index: number) => {
@@ -132,105 +110,132 @@ export default function ProductForm({ onSuccess, initialData }: ProductFormProps
     setExistingImages((prev) => prev.filter((_, i) => i !== index));
   };
 
-  // --- Guard Clauses ---
+  const onSubmit = async (data: FormInputs) => {
+    if (!tenant) return alert("Error: No shop context found.");
+
+    try {
+      setLoading(true);
+      const payload = {
+        ...data,
+        images: newImages,
+        existingImages: existingImages,
+        in_stock: data.in_stock,
+      };
+
+      if (isEditMode && initialData) {
+        await productService.updateProduct(initialData.id, payload);
+      } else {
+        await productService.addProduct(payload, tenant.tenant_id);
+      }
+
+      reset();
+      setNewImages([]);
+      setExistingImages([]);
+      await onSuccess();
+    } catch (error) {
+      console.error(error);
+      alert(isEditMode ? "Failed to update product" : "Failed to add product");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   if (tenantLoading) return <div className="p-8 text-center text-gray-500">Loading shop settings...</div>;
   if (!tenant) return <div className="p-8 text-center text-red-500 font-bold">Error: Store context missing.</div>;
 
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="bg-white p-8 rounded-2xl shadow-lg border border-gray-100"
-    >
-      <h2 className="text-2xl font-bold mb-6 text-gray-800">
+    <form onSubmit={handleSubmit(onSubmit)} className="form-container">
+      <h2 className="form-title">
         {isEditMode ? "Edit Product" : "Add New Mobile"}
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Name */}
+      <div className="form-grid">
         <div>
-          <label className="block text-sm font-medium text-gray-700">Mobile Name</label>
+          <label className="form-label">Mobile Name</label>
           <input
             {...register("name", { required: "Mobile name is required" })}
-            className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 p-2 border"
+            className="form-input"
           />
-          {errors.name && <p className="text-red-500 text-xs mt-1">{errors.name.message}</p>}
+          {errors.name && <p className="error-msg">{errors.name.message}</p>}
         </div>
 
-        {/* Brand */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">Brand</label>
+          <label className="form-label">Brand</label>
           <input
             {...register("brand", { required: "Brand is required" })}
-            className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 p-2 border"
+            className="form-input"
           />
-          {errors.brand && <p className="text-red-500 text-xs mt-1">{errors.brand.message}</p>}
+          {errors.brand && <p className="error-msg">{errors.brand.message}</p>}
         </div>
 
-        {/* Price */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">Price (₹)</label>
+          <label className="form-label">Price (₹)</label>
           <input
             type="number"
             {...register("price", {
               required: "Price is required",
               min: { value: 1, message: "Price must be greater than 0" },
             })}
-            className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 p-2 border"
+            className="form-input"
           />
-          {errors.price && <p className="text-red-500 text-xs mt-1">{errors.price.message}</p>}
+          {errors.price && <p className="error-msg">{errors.price.message}</p>}
         </div>
 
-        {/* Discount */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">Discount (%)</label>
+          <label className="form-label">Discount (%)</label>
           <input
             type="number"
             {...register("discount", {
-              min: { value: 0, message: "Discount cannot be negative" },
-              max: { value: 100, message: "Max discount is 100%" },
+              min: { value: 0, message: "No negative discount" },
+              max: { value: 100, message: "Max 100%" },
             })}
-            className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 p-2 border"
+            className="form-input"
           />
-          {errors.discount && <p className="text-red-500 text-xs mt-1">{errors.discount.message}</p>}
+          {errors.discount && <p className="error-msg">{errors.discount.message}</p>}
         </div>
 
-        {/* Category */}
         <div>
-          <label className="block text-sm font-medium text-gray-700">Category</label>
-          <select
-            {...register("category", { required: true })}
-            className="mt-1 w-full rounded-lg border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 p-2 border"
-          >
+          <label className="form-label">Category</label>
+          <select {...register("category", { required: true })} className="form-select">
             {CATEGORIES.map((c) => (
               <option key={c} value={c}>{c}</option>
             ))}
           </select>
         </div>
 
-        {/* Description */}
-        <div className="md:col-span-2 space-y-2">
-          <label className="text-sm font-semibold text-gray-700">Description / Specs</label>
+        <div className="full-width">
+          <label className="form-label">Description / Specs</label>
           <textarea 
             {...register('description')} 
             rows={3}
-            className="w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 p-2.5 border"
-            placeholder="e.g. 8GB RAM, 256GB Storage, 50MP Camera, Blue Color..."
+            className="form-textarea"
+            placeholder="e.g. 8GB RAM, 256GB Storage..."
           />
         </div>
 
-        {/* --- MULTIPLE IMAGE UPLOAD --- */}
-        <div className="md:col-span-2">
-          <label className="block text-sm font-medium text-gray-700 mb-3">
-            Product Gallery (Select multiple images)
+        {/* --- Image Gallery Section --- */}
+        <div className="full-width">
+          <label className="form-label" style={{ marginBottom: '0.75rem' }}>
+            Product Gallery
           </label>
 
-          <div className="flex flex-wrap gap-4">
-            {/* Upload Button */}
-            <label className="cursor-pointer flex flex-col items-center justify-center w-28 h-28 border-2 border-dashed border-gray-300 rounded-xl bg-gray-50 hover:bg-gray-100 hover:border-blue-400 transition-all group">
-              <div className="bg-white p-2 rounded-full shadow-sm group-hover:scale-110 transition-transform">
-                <Plus className="h-6 w-6 text-blue-600" />
+          <div className="gallery-container">
+            <label 
+              className={`upload-box group ${isDragging ? 'drag-active' : ''}`}
+              onDragOver={handleDragOver}
+              onDragLeave={handleDragLeave}
+              onDrop={handleDrop}
+            >
+              <div className="upload-icon-wrapper">
+                {isDragging ? (
+                   <UploadCloud className="h-6 w-6 text-blue-500 animate-bounce" />
+                ) : (
+                   <Plus className="h-6 w-6 text-blue-600" />
+                )}
               </div>
-              <span className="text-xs font-medium text-gray-500 mt-2">Add Images</span>
+              <span className="text-xs font-medium text-gray-400 mt-2">
+                {isDragging ? "Drop to Upload" : "Add or Drag Images"}
+              </span>
               <input
                 type="file"
                 multiple
@@ -240,107 +245,56 @@ export default function ProductForm({ onSuccess, initialData }: ProductFormProps
               />
             </label>
 
-            {/* 1. Existing Images */}
+            {/* Render Previews */}
             {existingImages.map((url, idx) => (
-              <div key={`exist-${idx}`} className="relative w-28 h-28 group">
-                <img
-                  src={url}
-                  alt={`Product ${idx + 1}`}
-                  className="w-full h-full object-cover rounded-xl border border-gray-200 shadow-sm"
-                />
-                <button
-                  type="button"
-                  onClick={() => removeExistingImage(idx)}
-                  className="absolute -top-2 -right-2 bg-white text-red-500 rounded-full p-1.5 shadow-md border border-gray-100 hover:bg-red-50 transition opacity-0 group-hover:opacity-100 scale-90 group-hover:scale-100"
-                >
+              <div key={`exist-${idx}`} className="image-preview group">
+                <img src={url} alt="Existing" className="preview-img" />
+                <button type="button" onClick={() => removeExistingImage(idx)} className="remove-btn group-hover:opacity-100">
                   <X size={14} />
                 </button>
-                <span className="absolute bottom-1 left-1 bg-black/50 text-white text-[10px] px-2 py-0.5 rounded-full backdrop-blur-sm">
-                  Saved
-                </span>
+                <span className="badge badge-saved">Saved</span>
               </div>
             ))}
 
-            {/* 2. New Images */}
             {newImages.map((file, idx) => (
-              <div key={`new-${idx}`} className="relative w-28 h-28 group animate-in fade-in zoom-in-95 duration-200">
-                <img
-                  src={URL.createObjectURL(file)}
-                  alt="New Preview"
-                  className="w-full h-full object-cover rounded-xl border-2 border-blue-500 shadow-md"
-                />
-                <button
-                  type="button"
-                  onClick={() => removeNewImage(idx)}
-                  className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1.5 shadow-md hover:bg-red-600 transition scale-90 group-hover:scale-100"
-                >
+              <div key={`new-${idx}`} className="image-preview group">
+                <img src={URL.createObjectURL(file)} alt="New" className="preview-img border-blue-500" />
+                <button type="button" onClick={() => removeNewImage(idx)} className="remove-btn group-hover:opacity-100">
                   <X size={14} />
                 </button>
-                <span className="absolute bottom-1 left-1 bg-blue-600 text-white text-[10px] px-2 py-0.5 rounded-full shadow-sm">
-                  New
-                </span>
+                <span className="badge badge-new">New</span>
               </div>
             ))}
           </div>
-          
-          <p className="text-xs text-gray-500 mt-2">
-            Tip: You can select multiple files at once. Click the 'X' to remove an image.
-          </p>
         </div>
 
-        {/* --- STOCK TOGGLE --- */}
-        <div className="md:col-span-2 flex items-center justify-between bg-gray-50 p-4 rounded-xl border border-gray-200 mt-2">
+        {/* --- Stock Toggle --- */}
+        <div className="full-width stock-panel">
           <div>
-            <h3 className="text-sm font-bold text-gray-900">Availability Status</h3>
+            <h3 className="text-sm font-bold">Availability Status</h3>
             <p className="text-xs text-gray-500 mt-1">
-              {inStock 
-                ? "Active: Product is visible to customers on the home page." 
-                : "Hidden: Product is marked 'Out of Stock' and hidden from home page."}
+              {inStock ? "Active: Visible on home page." : "Hidden: Marked Out of Stock."}
             </p>
           </div>
-          
           <button
             type="button"
             onClick={() => setValue("in_stock", !inStock, { shouldDirty: true })}
-            className={`relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
-              inStock ? 'bg-green-600' : 'bg-gray-300'
-            }`}
+            className={`toggle-switch ${inStock ? 'active' : 'inactive'}`}
           >
-            <span
-              className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
-                inStock ? 'translate-x-5' : 'translate-x-0'
-              }`}
-            />
+            <span className="toggle-knob" />
           </button>
         </div>
       </div>
 
-      {/* Price Preview */}
       {price > 0 && (
-        <div className="mt-6 p-4 bg-blue-50 rounded-lg text-sm">
-          <p>
-            Final Price after discount:{" "}
-            <span className="font-semibold text-blue-700">
-              ₹{finalPrice.toFixed(2)}
-            </span>
-          </p>
+        <div className="price-preview">
+          Final Price: <span className="font-semibold text-blue-500">₹{finalPrice.toFixed(2)}</span>
         </div>
       )}
 
-      {/* Submit Button */}
-      <button
-        disabled={loading}
-        type="submit"
-        className="mt-6 w-full flex items-center justify-center gap-2 py-3 rounded-xl text-white font-medium bg-blue-600 hover:bg-blue-700 transition disabled:opacity-50 shadow-lg shadow-blue-200"
-      >
-        {loading && <Loader2 className="animate-spin h-4 w-4" />}
-        {loading
-          ? isEditMode
-            ? "Updating Product..."
-            : "Adding Product..."
-          : isEditMode
-            ? "Update Product"
-            : "Add Product"}
+      <button disabled={loading} type="submit" className="submit-btn">
+        {loading && <Loader2 className="animate-spin h-4 w-4 mr-2" />}
+        {loading ? "Processing..." : (isEditMode ? "Update Product" : "Add Product")}
       </button>
     </form>
   );

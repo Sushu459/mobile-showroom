@@ -1,4 +1,5 @@
 import { CATEGORIES } from '../../utils/constants';
+import './CategoryFilter.css'; // Import the CSS file
 
 interface Props {
   selectedCategory: string;
@@ -7,26 +8,19 @@ interface Props {
 
 export default function CategoryFilter({ selectedCategory, onSelect }: Props) {
   return (
-    <div className="flex flex-wrap gap-2 mb-8 justify-center sm:justify-start">
+    <div className="filter-container">
       <button
         onClick={() => onSelect('All')}
-        className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-          selectedCategory === 'All' 
-            ? 'bg-blue-600 text-white' 
-            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-        }`}
+        className={`filter-btn ${selectedCategory === 'All' ? 'active' : 'inactive'}`}
       >
         All
       </button>
+      
       {CATEGORIES.map((cat) => (
         <button
           key={cat}
           onClick={() => onSelect(cat)}
-          className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-            selectedCategory === cat
-              ? 'bg-blue-600 text-white'
-              : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-          }`}
+          className={`filter-btn ${selectedCategory === cat ? 'active' : 'inactive'}`}
         >
           {cat}
         </button>

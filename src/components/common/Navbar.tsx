@@ -11,6 +11,7 @@ import {
   Phone,
   Store
 } from "lucide-react";
+import "./Navbar.css"; // Import the CSS file
 
 export default function Navbar() {
   const { isAdmin } = useAuth();
@@ -21,10 +22,9 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Dynamic Colors
-  const primaryColor = tenant?.primary_color || "#2563EB"; 
-  const secondaryColor = tenant?.secondary_color || "#1E40AF";
+  const primaryColor = tenant?.primary_color || ""; 
+  const secondaryColor = tenant?.secondary_color || "";
   const mobileNumber = tenant?.mobile_number || "";
-
 
   useEffect(() => {
     const handleScroll = () => {
@@ -41,52 +41,44 @@ export default function Navbar() {
   };
 
   const handleContactClick = () => {
-  setIsMobileMenuOpen(false);
+    setIsMobileMenuOpen(false);
 
-  if (!mobileNumber) {
-    alert("Contact number not available");
-    return;
-  }
+    if (!mobileNumber) {
+      alert("Contact number not available");
+      return;
+    }
 
-  window.location.href = `tel:${mobileNumber.replace(/\s+/g, "")}`;
-};
-
+    window.location.href = `tel:${mobileNumber.replace(/\s+/g, "")}`;
+  };
 
   return (
     <>
       <nav
-        className={`fixed top-0 w-full z-50 transition-all duration-300 ${
-          isScrolled 
-            ? "shadow-lg backdrop-blur-sm" 
-            : ""
-        }`}
+        className={`navbar-root ${isScrolled ? "scrolled" : ""}`}
         style={{ 
-          // Apply Tenant Theme Gradient to the ENTIRE Navbar
           background: `linear-gradient(to right, ${primaryColor}, ${secondaryColor})`,
         }}
       >
-        <div className="max-w-7xl mx-auto px-6">
-          <div className="flex justify-between items-center h-16">
+        <div className="navbar-container">
+          <div className="navbar-content">
 
             {/* --- LOGO & BRANDING --- */}
             <Link
               to="/"
-              className="flex items-center space-x-3 group"
+              className="brand-link"
               onClick={() => setIsMobileMenuOpen(false)}
             >
-              {/* White Logo Box to Pop against Color */}
-              <div 
-                className="p-2.5 rounded-xl bg-white shadow-md transition-transform group-hover:scale-105 duration-300"
-              >
+              {/* White Logo Box */}
+              <div className="logo-box">
                 <Store className="h-5 w-5" style={{ color: primaryColor }} />
               </div>
 
-              {/* White Text for Contrast */}
-              <div className="flex flex-col">
-                <span className="text-xl font-extrabold tracking-tight leading-none text-white">
-                  {tenant?.name || "MobileShowroom"}
+              {/* White Text */}
+              <div className="brand-text-col">
+                <span className="brand-title">
+                  {tenant?.name || ""}
                 </span>
-                <span className="text-[10px] font-bold uppercase tracking-widest text-white/80">
+                <span className="brand-subtitle">
                   Official Store
                 </span>
               </div>
@@ -94,19 +86,15 @@ export default function Navbar() {
 
             {/* --- DESKTOP NAV --- */}
             {!isAdmin && (
-              <div className="hidden md:flex items-center space-x-8 text-sm font-medium">
-                <Link
-                  to="/"
-                  className="text-white/90 hover:text-white transition-colors relative group"
-                >
+              <div className="desktop-nav">
+                <Link to="/" className="nav-link">
                   Home
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-white transition-all group-hover:w-full" />
+                  <span className="nav-link-underline" />
                 </Link>
 
-                {/* White Button with Colored Text */}
                 <button
                   onClick={handleContactClick}
-                  className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white font-bold shadow-lg transition-all hover:shadow-xl hover:-translate-y-0.5 active:scale-95"
+                  className="contact-btn"
                   style={{ color: primaryColor }}
                 >
                   <Phone className="w-4 h-4" />
@@ -116,63 +104,53 @@ export default function Navbar() {
             )}
 
             {/* --- ADMIN NAV --- */}
-            <div className="hidden md:flex items-center space-x-4">
+            <div className="auth-nav">
               {isAdmin ? (
                 <>
                   <Link
                     to="/admin/dashboard"
-                    className={`px-4 py-2 rounded-full text-sm font-medium transition flex items-center gap-2 ${
-                      location.pathname.includes("dashboard")
-                        ? "bg-white text-gray-900 shadow-sm"
-                        : "text-white hover:bg-white/10"
+                    className={`dashboard-link ${
+                      location.pathname.includes("dashboard") ? "active" : "inactive"
                     }`}
                   >
                     <LayoutDashboard className="h-4 w-4" />
                     Dashboard
                   </Link>
 
-                  <button
-                    onClick={handleLogout}
-                    className="px-4 py-2 rounded-full text-sm font-medium text-white/90 hover:bg-white/10 hover:text-white transition flex items-center gap-2"
-                  >
+                  <button onClick={handleLogout} className="logout-btn">
                     <LogOut className="h-4 w-4" />
                     Logout
                   </button>
                 </>
               ) : (
-                <Link
-                  to="/admin/login"
-                  className="text-sm font-medium text-white/80 hover:text-white transition"
-                >
+                <Link to="/admin/login" className="partner-link">
                   Partner Login
                 </Link>
               )}
             </div>
 
             {/* --- MOBILE TOGGLE --- */}
-            <div className="md:hidden">
-              <button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="p-2 text-white hover:bg-white/10 rounded-lg transition"
-              >
-                {isMobileMenuOpen ? (
-                  <X className="h-6 w-6" />
-                ) : (
-                  <Menu className="h-6 w-6" />
-                )}
-              </button>
-            </div>
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="mobile-toggle-btn"
+            >
+              {isMobileMenuOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
+            </button>
           </div>
         </div>
 
         {/* --- MOBILE MENU --- */}
         {isMobileMenuOpen && (
-          <div className="md:hidden bg-white border-t border-gray-100 shadow-xl absolute w-full animate-in slide-in-from-top-5">
-            <div className="px-6 py-6 space-y-4">
+          <div className="mobile-menu">
+            <div className="mobile-menu-content">
               <Link
                 to="/"
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="block text-gray-700 font-medium text-lg"
+                className="mobile-nav-item mobile-link-main"
               >
                 Home
               </Link>
@@ -180,7 +158,7 @@ export default function Navbar() {
               {!isAdmin && (
                 <button
                   onClick={handleContactClick}
-                  className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-white font-bold shadow-md active:scale-95 transition-transform"
+                  className="mobile-contact-btn"
                   style={{ 
                     background: `linear-gradient(to right, ${primaryColor}, ${secondaryColor})` 
                   }}
@@ -195,14 +173,11 @@ export default function Navbar() {
                   <Link
                     to="/admin/dashboard"
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className="block text-gray-700 font-medium"
+                    className="mobile-nav-item mobile-link-main"
                   >
                     Dashboard
                   </Link>
-                  <button
-                    onClick={handleLogout}
-                    className="block w-full text-left text-red-600 font-medium"
-                  >
+                  <button onClick={handleLogout} className="mobile-nav-item mobile-logout">
                     Logout
                   </button>
                 </>
@@ -210,7 +185,7 @@ export default function Navbar() {
                 <Link
                   to="/admin/login"
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="block text-center text-sm text-gray-400 mt-4 pt-4 border-t border-gray-100"
+                  className="mobile-partner"
                 >
                   Partner Login
                 </Link>
@@ -221,7 +196,7 @@ export default function Navbar() {
       </nav>
 
       {/* Spacer to prevent content overlap */}
-      <div className="h-16" />
+      <div className="navbar-spacer" />
     </>
   );
 }

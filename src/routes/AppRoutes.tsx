@@ -24,7 +24,7 @@ export default function AppRoutes() {
         <Route path="/admin/dashboard" element={<Dashboard />} />
         <Route path="/admin/add" element={<AddProduct />} />
         <Route path="/admin/manage" element={<ManageProducts />} />
-        <Route path="/admin/edit/:id" element={<EditProduct />} />
+        <Route path="/admin/edit/:brand/:id" element={<EditProduct />} />
       </Route>
     </Routes>
   );
